@@ -16,11 +16,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       // Set theme here if you wish to
-      home: const Placeholder(), // This should call the entry point of the app.
-
+      home: Placeholder(), // This should call the entry point of the app.
     );
   }
 }
-
