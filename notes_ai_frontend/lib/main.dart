@@ -1,10 +1,5 @@
-/// -----------------------------------------------------
-/// 1. Use this as the entry point to the application.
-/// 2. Create files as necessary under the same directory.
-/// 3. Create separate files for each functionality/screen
-/// -----------------------------------------------------
-
 import 'package:flutter/material.dart';
+import 'package:notes_ai/screens/home.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,10 +12,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      // Set theme here if you wish to
-      home: const Placeholder(), // This should call the entry point of the app.
+      debugShowCheckedModeBanner: false,
+      // add custom theme later
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: const HomePage(), // This should call the entry point of the app.
 
     );
   }
 }
-
