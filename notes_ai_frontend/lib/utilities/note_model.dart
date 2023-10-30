@@ -39,6 +39,7 @@ class NotesModel {
 
   Future<int> updateNote(Note note) async {
     Map<String, dynamic> values = note.toMap();
+    // Should not update the primary key, only the other columns
     values.remove("id");
     final count = await db
         .update("notes", values, where: "id = ?", whereArgs: [note.id]);

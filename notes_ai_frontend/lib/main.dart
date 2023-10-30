@@ -18,7 +18,6 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: const HomePage(), // This should call the entry point of the app.
-
     );
   }
 }
