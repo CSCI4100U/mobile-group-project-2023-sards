@@ -1,7 +1,7 @@
 class Note{
   int? id;
   String title;
-  String text;
+  String text; // Change this to raw bytes
 
   Note({this.id, required this.title, required this.text});
 
