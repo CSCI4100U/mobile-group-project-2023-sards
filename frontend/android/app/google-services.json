@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "957321509907",
+    "project_id": "kanjou-sard",
+    "storage_bucket": "kanjou-sard.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:957321509907:android:6039b9d141e09a343c53e6",
+        "android_client_info": {
+          "package_name": "com.example.kanjou"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBTnhLYNr88yy48vTYYIq6hpTjUs-ErbiE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
