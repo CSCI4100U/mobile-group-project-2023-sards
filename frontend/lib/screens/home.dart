@@ -3,6 +3,7 @@ import 'package:kanjou/screens/create_note.dart';
 import 'package:kanjou/utilities/note_model.dart';
 import 'package:kanjou/models/note.dart';
 import 'package:kanjou/screens/settingsPage.dart';
+import 'package:kanjou/screens/logIn.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -114,6 +115,16 @@ class _HomePageState extends State<HomePage> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => SettingsPage())
+                );
+              },
+            ),
+            ListTile(
+              title: const Text('Log In'),
+              selected: _selectedIndex == 0,
+              onTap: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LogIn())
                 );
               },
             )
