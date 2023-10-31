@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:kanjou/screens/create_note.dart';
 import 'package:kanjou/utilities/note_model.dart';
 import 'package:kanjou/models/note.dart';
+import 'package:kanjou/screens/settingsPage.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -14,58 +15,21 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
   int _selectedIndex = -1; // for selecting, gestureDetector etc
+
+  final _model = NotesModel();
+  final NotesModel notesModel = NotesModel();
+  List<Note> _notes = [];
+
   bool _searchBoolean = false;
 
-  @override
-  Widget build(BuildContext context) {
-    CollectionReference notesCollection =
-        FirebaseFirestore.instance.collection('notes');
-
-    return Scaffold(
-      appBar: AppBar(
-        leading: Builder(
-          builder: (BuildContext context) {
-            return IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.menu),
-            );
-          },
-        ),
-        title: _searchBoolean
-            ? _buildSearchField()
-            : const Text("Welcome, [user]!"),
-        actions: <Widget>[
-          IconButton(
-            onPressed: () {
-              setState(() {
-                _searchBoolean = !_searchBoolean;
-              });
-            },
-            icon: Icon(_searchBoolean ? Icons.clear : Icons.search),
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.more_vert),
-          ),
-        ],
-      ),
-      body: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Expanded(child: _buildListOfNotes()),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        tooltip: 'Add Notes!',
-        onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const NoteForm()));
-        },
-        child: const Icon(Icons.edit_note_sharp),
-      ),
-    );
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
+  
 
   Widget _buildSearchField() {
     return TextField(
@@ -97,4 +61,66 @@ class _HomePageState extends State<HomePage> {
       ],
     );
   }
+
+  @override
+  Widget build(BuildContext context) {
+    CollectionReference notesCollection =
+    FirebaseFirestore.instance.collection('notes');
+
+    return Scaffold(
+      appBar: AppBar(
+        title: _searchBoolean ? _buildSearchField() : const Text(
+          "Welcome, [user]!", // add username later
+        ),
+        actions: <Widget>[
+          IconButton(onPressed: (){
+            setState(() {
+              _searchBoolean = !_searchBoolean;
+            });
+          },
+              icon: Icon(_searchBoolean ? Icons.clear : Icons.search),
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.more_vert),
+          ),
+        ],
+      ),
+      body: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Expanded(child: _buildListOfNotes()),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        tooltip: 'Add Notes!',
+        onPressed: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const NoteForm()));
+        },
+        child: const Icon(Icons.edit_note_sharp),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+                child: Text("Account details here later")
+            ),
+            ListTile(
+              title: const Text('Settings'),
+              selected: _selectedIndex == 0,
+              onTap: (){
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SettingsPage())
+                );
+              },
+            )
+          ],
+        ),
+      ),
+    );
+  }
 }
+
