@@ -44,37 +44,37 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyD7jWhnSX8rQVW6z9DBCduj2CeiEiMKVKY',
-    appId: '1:957321509907:web:48f3927a9522c0163c53e6',
-    messagingSenderId: '957321509907',
-    projectId: 'kanjou-sard',
-    authDomain: 'kanjou-sard.firebaseapp.com',
-    storageBucket: 'kanjou-sard.appspot.com',
+    apiKey: 'AIzaSyDzENN77gP_dKhhn15Y6n2ajzgNsbG3dcU',
+    appId: '1:333958828802:web:d59b2b63c9305d02ef681b',
+    messagingSenderId: '333958828802',
+    projectId: 'kanjou-app',
+    authDomain: 'kanjou-app.firebaseapp.com',
+    storageBucket: 'kanjou-app.appspot.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBTnhLYNr88yy48vTYYIq6hpTjUs-ErbiE',
-    appId: '1:957321509907:android:6039b9d141e09a343c53e6',
-    messagingSenderId: '957321509907',
-    projectId: 'kanjou-sard',
-    storageBucket: 'kanjou-sard.appspot.com',
+    apiKey: 'AIzaSyB3dKN8WZ6R_aTTsKO2D4-Azl5HeCLif60',
+    appId: '1:333958828802:android:a80d68ec154f25d1ef681b',
+    messagingSenderId: '333958828802',
+    projectId: 'kanjou-app',
+    storageBucket: 'kanjou-app.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCWhyqJDJ-nJXh69Xq4HoU03gJj0SgcnrU',
-    appId: '1:957321509907:ios:a73904141ffcd4503c53e6',
-    messagingSenderId: '957321509907',
-    projectId: 'kanjou-sard',
-    storageBucket: 'kanjou-sard.appspot.com',
-    iosBundleId: 'com.example.notesAi',
+    apiKey: 'AIzaSyAfDAh3hB36wCF836hHf9_pg27qJKjl7lI',
+    appId: '1:333958828802:ios:ed63eee3cc0c2dfbef681b',
+    messagingSenderId: '333958828802',
+    projectId: 'kanjou-app',
+    storageBucket: 'kanjou-app.appspot.com',
+    iosBundleId: 'com.example.kanjou',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyCWhyqJDJ-nJXh69Xq4HoU03gJj0SgcnrU',
-    appId: '1:957321509907:ios:8cd28493be3b2a9b3c53e6',
-    messagingSenderId: '957321509907',
-    projectId: 'kanjou-sard',
-    storageBucket: 'kanjou-sard.appspot.com',
-    iosBundleId: 'com.example.notesAi.RunnerTests',
+    apiKey: 'AIzaSyAfDAh3hB36wCF836hHf9_pg27qJKjl7lI',
+    appId: '1:333958828802:ios:cf8e7c1e8175f061ef681b',
+    messagingSenderId: '333958828802',
+    projectId: 'kanjou-app',
+    storageBucket: 'kanjou-app.appspot.com',
+    iosBundleId: 'com.example.kanjou.RunnerTests',
   );
 }
