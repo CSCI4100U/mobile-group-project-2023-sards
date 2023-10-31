@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyCWhyqJDJ-nJXh69Xq4HoU03gJj0SgcnrU</string>
+	<key>GCM_SENDER_ID</key>
+	<string>957321509907</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.kanjou.RunnerTests</string>
+	<key>PROJECT_ID</key>
+	<string>kanjou-sard</string>
+	<key>STORAGE_BUCKET</key>
+	<string>kanjou-sard.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:957321509907:ios:8cd28493be3b2a9b3c53e6</string>
+</dict>
+</plist>
