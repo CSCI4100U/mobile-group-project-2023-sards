@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class NoteForm extends StatefulWidget {
-  const NoteForm({Key? key}) : super(key: key);
+  const NoteForm({Key? key, this.noteData}) : super(key: key);
+
+  final Map<String, dynamic>? noteData;
 
   @override
   _NoteFormState createState() => _NoteFormState();
@@ -14,8 +16,8 @@ class _NoteFormState extends State<NoteForm> {
   @override
   void initState() {
     super.initState();
-    _titleController = TextEditingController();
-    _textController = TextEditingController();
+    _titleController = TextEditingController(text: widget.noteData?['title'] ?? "");
+    _textController = TextEditingController(text: widget.noteData?['text'] ?? "");
   }
 
   @override
@@ -60,6 +62,7 @@ class _NoteFormState extends State<NoteForm> {
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context, {
+                  ...widget.noteData ?? {}, // Append the prefilled data from the widget
                   'title': _titleController.text,
                   'text': _textController.text,
                 });
