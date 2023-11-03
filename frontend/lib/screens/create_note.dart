@@ -28,7 +28,19 @@ class _NoteFormState extends State<NoteForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Add a Note')),
+      appBar: AppBar(
+        title: const Text('Add a Note'),
+        actions: [
+          IconButton(
+            onPressed: () {/* TODO: Implement Speech-To-Text Functionality */},
+            icon: Icon(Icons.mic)
+          ),
+          IconButton(
+            onPressed: () {/* TODO: Implement OCR Functionality */},
+            icon: Icon(Icons.document_scanner_outlined)
+          )
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
