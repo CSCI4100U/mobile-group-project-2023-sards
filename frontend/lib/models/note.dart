@@ -1,35 +1,51 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:kanjou/services/database_helper.dart';
 
-class NoteSkeleton {
-  String title;
-  String text; // Change this to raw bytes
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-  NoteSkeleton({required this.title, required this.text});
+const months = {
+  1: 'Jan',
+  2: 'Feb',
+  3: 'Mar',
+  4: 'Apr',
+  5: 'May',
+  6: 'June',
+  7: 'July',
+  8: 'Aug',
+  9: 'Sept',
+  10: 'Oct',
+  11: 'Nov',
+  12: 'Dec'
+};
 
-  Map<String, dynamic> toMap() {
-    return {'title': title, 'text': text};
-  }
-
-  NoteSkeleton.fromMap(Map<String, dynamic> noteMap)
-      : title = noteMap['title'],
-        text = noteMap['text'];
+// This method converts a date time string to the format of Month Name dd, yyyy
+String convertStringToDate(String date) {
+  DateTime dateTime = DateTime.parse(date);
+  return "${months[dateTime.month]} ${dateTime.day.toString().padLeft(2, '0')}, ${dateTime.year.toString()}";
 }
-
 
 class Note {
   String title;
   String text; // Change this to raw bytes
-  final DocumentReference reference;
+  String id;
+  String date;
+  // final DocumentReference reference;
 
-  Note({required this.title, required this.text, required this.reference});
+  Note(
+      {required this.title,
+      required this.text,
+      required this.id,
+      required this.date});
 
   Map<String, dynamic> toMap() {
-    return {'reference': reference.id, 'title': title, 'text': text};
+    return {'id': id, 'title': title, 'text': text, 'date': date};
   }
 
   Note.fromMap(Map<String, dynamic> noteMap)
-      : reference = noteMap['reference'],
+      : id = noteMap['id'],
         title = noteMap['title'],
-        text = noteMap['text'];
+        text = noteMap['text'],
+        date = convertStringToDate(noteMap['date']);
 }
-

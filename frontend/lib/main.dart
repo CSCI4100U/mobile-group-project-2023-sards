@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:kanjou/screens/home.dart';
+import 'package:kanjou/utilities/note_model.dart';
+
 import 'package:json_theme/json_theme.dart';
+
+import 'package:provider/provider.dart';
 
 import 'package:flutter/services.dart'; // For rootBundle
 import 'dart:convert'; // For jsonDecode
@@ -31,11 +35,14 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      // add custom theme later
-      theme: theme,
-      home: const HomePage(), // This should call the entry point of the app.
-    );
+    return ChangeNotifierProvider(
+        create: (context) => NotesModel(),
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          // add custom theme later
+          theme: theme,
+          home:
+              HomePage(), // This should call the entry point of the app.
+        ));
   }
 }
