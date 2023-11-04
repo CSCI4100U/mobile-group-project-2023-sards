@@ -1,4 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 
 class NoteForm extends StatefulWidget {
   const NoteForm({Key? key, this.noteData}) : super(key: key);
@@ -12,6 +15,7 @@ class NoteForm extends StatefulWidget {
 class _NoteFormState extends State<NoteForm> {
   late TextEditingController _titleController;
   late TextEditingController _textController;
+  File? image;
 
   @override
   void initState() {
@@ -27,6 +31,19 @@ class _NoteFormState extends State<NoteForm> {
     super.dispose();
   }
 
+   // Pick images from platform specific gallery
+  Future pickImageFromGallery() async {
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if(image == null) return;
+      final imageTemp = File(image.path);
+
+      setState(() => this.image = imageTemp);
+    } on PlatformException catch(e) {
+      print('Failed to pick image: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +55,9 @@ class _NoteFormState extends State<NoteForm> {
             icon: Icon(Icons.mic)
           ),
           IconButton(
-            onPressed: () {/* TODO: Implement OCR Functionality */},
+            onPressed: () {
+              pickImageFromGallery();
+            },
             icon: Icon(Icons.document_scanner_outlined)
           )
         ],
