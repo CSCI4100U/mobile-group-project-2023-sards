@@ -14,6 +14,8 @@
 	<string>6.0</string>
 	<key>CFBundleName</key>
 	<string>kanjou</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Recognize text in images and add it to your note</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
