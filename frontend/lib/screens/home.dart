@@ -117,7 +117,7 @@ class _HomePageState extends State<HomePage> {
     final notesModel = Provider.of<NotesModel>(context);
 
     // These methods have to be inside the build method because they use context
-    addGrade() async {
+    addNote() async {
       Map<String, dynamic> data = await Navigator.push(
           context, MaterialPageRoute(builder: (context) => const NoteForm()));
 
@@ -152,7 +152,7 @@ class _HomePageState extends State<HomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         tooltip: 'Add Notes!',
-        onPressed: addGrade,
+        onPressed: addNote,
         child: const Icon(Icons.edit_note_sharp),
       ),
       drawer: Drawer(
