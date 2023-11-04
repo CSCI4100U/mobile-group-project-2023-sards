@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_tesseract_ocr/android_ios.dart';
 import 'package:image_picker/image_picker.dart';
 
 class NoteForm extends StatefulWidget {
@@ -36,9 +37,10 @@ class _NoteFormState extends State<NoteForm> {
     try {
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
       if(image == null) return;
-      final imageTemp = File(image.path);
+      return image.path;
+      // final imageTemp = File(image.path);
 
-      setState(() => this.image = imageTemp);
+      // setState(() => this.image = imageTemp);
     } on PlatformException catch(e) {
       print('Failed to pick image: $e');
     }
@@ -55,8 +57,14 @@ class _NoteFormState extends State<NoteForm> {
             icon: Icon(Icons.mic)
           ),
           IconButton(
-            onPressed: () {
-              pickImageFromGallery();
+            onPressed: () async {
+             var imagePath = await pickImageFromGallery();
+            //  print(imagePath);
+
+             String text = await FlutterTesseractOcr.extractText(imagePath);
+
+              _textController.text = text;
+
             },
             icon: Icon(Icons.document_scanner_outlined)
           )
