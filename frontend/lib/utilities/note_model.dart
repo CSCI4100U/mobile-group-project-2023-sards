@@ -13,6 +13,8 @@ class NotesModel extends ChangeNotifier {
   var uuid = const Uuid();
   List<Note> notes = [];
 
+  var db;
+
   NotesModel() {
     // // This is needed for inintializing the DB on Windows/Mac/Linux
     // if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
@@ -25,11 +27,15 @@ class NotesModel extends ChangeNotifier {
 
     // db = DatabaseHelper.init();
 
-    getAllNotes();
+    DatabaseHelper.init().then((value) => {
+      db = value,
+      getAllNotes()
+    });
   }
 
+
+
   Future getAllNotes() async {
-    final db = await DatabaseHelper.init();
     final List<Map<String, dynamic>> maps = await db.query('notes');
     notes = List.generate(maps.length, (i) {
       return Note.fromMap(maps[i]);
@@ -38,7 +44,6 @@ class NotesModel extends ChangeNotifier {
   }
 
   Future<int> insertNote(Map<String, dynamic> dataMap) async {
-    final db = await DatabaseHelper.init();
     Note note = Note.fromMap({
       ...dataMap,
       'date': DateTime.now().toString(),
@@ -59,14 +64,12 @@ class NotesModel extends ChangeNotifier {
   }
 
   Future<void> deleteNote(Note note) async {
-    final db = await DatabaseHelper.init();
     notes.remove(note);
     notifyListeners();
     await db.delete('notes', where: 'id = ?', whereArgs: [note.id]);
   }
 
   Future<void> updateNote(Note note) async {
-    final db = await DatabaseHelper.init();
     notes[notes.indexWhere((element) => element.id == note.id)] = note;
     notifyListeners();
     await db

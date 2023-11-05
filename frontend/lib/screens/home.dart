@@ -28,8 +28,12 @@ const months = {
 
 // This method converts a date time string to the format of Month Name dd, yyyy
 String convertStringToDate(String date) {
-  DateTime dateTime = DateTime.parse(date);
-  return "${months[dateTime.month]} ${dateTime.day.toString().padLeft(2, '0')}, ${dateTime.year.toString()}";
+  try {
+    DateTime dateTime = DateTime.parse(date);
+    return "${months[dateTime.month]} ${dateTime.day.toString().padLeft(2, '0')}, ${dateTime.year.toString()}";
+  } catch (e) {
+    return "No date";
+  }
 }
 
 class HomePage extends StatefulWidget {
