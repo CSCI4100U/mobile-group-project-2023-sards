@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:kanjou/screens/create_note.dart';
-import 'package:kanjou/utilities/note_model.dart';
+import 'package:kanjou/utilities/note_provider.dart';
 import 'package:kanjou/models/note.dart';
 import 'package:kanjou/screens/settings_page.dart';
 import 'package:kanjou/screens/log_in.dart';
@@ -43,7 +43,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final _model = NotesModel();
   // List<Note> note = [];
 
   bool _searchBoolean = false;
@@ -59,7 +58,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildListOfNotes(NotesModel notesModel) {
+  Widget _buildListOfNotes(NotesProvider providerNotes) {
     return MasonryGridView.count(
       padding: EdgeInsets.zero,
       shrinkWrap: true,
@@ -67,21 +66,24 @@ class _HomePageState extends State<HomePage> {
       crossAxisCount: 2,
       mainAxisSpacing: 3,
       crossAxisSpacing: 4,
-      itemCount: notesModel.notes.length,
+      itemCount: providerNotes.notes.length,
       itemBuilder: (context, index) {
-        final note = notesModel.notes[index];
+        final note = providerNotes.notes[index];
         return GestureDetector(
-          onTap: () {
-            Navigator.push(
+          onTap: () async{
+            Map<String,dynamic> noteMap = await Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => NoteForm(
                           noteData: note.toMap(),
                         )));
+            if(noteMap != null){
+              await providerNotes.updateNote(noteMap, index);
+            }
           },
-          onLongPress: () {
-            notesModel.deleteNote(
-                note); // This is a temporary solution, will be changed later
+          onLongPress: () async{
+            await providerNotes.deleteNote(
+                index); // This is a temporary solution, will be changed later
           },
           child: Card(
               color: const Color.fromARGB(255, 23, 23, 23),
@@ -136,7 +138,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     // CollectionReference notesCollection =
     // FirebaseFirestore.instance.collection('notes');
-    final notesModel = Provider.of<NotesModel>(context);
+    final providerNotes = Provider.of<NotesProvider>(context);
 
     // These methods have to be inside the build method because they use context
     addNote() async {
@@ -144,7 +146,7 @@ class _HomePageState extends State<HomePage> {
           context, MaterialPageRoute(builder: (context) => const NoteForm()));
 
       if (data != null) {
-        await notesModel.insertNote(data);
+        providerNotes.insertNote(data);
       }
     }
 
@@ -169,7 +171,7 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
-          Expanded(child: _buildListOfNotes(notesModel)),
+          Expanded(child: _buildListOfNotes(providerNotes)),
         ],
       ),
       floatingActionButton: FloatingActionButton(

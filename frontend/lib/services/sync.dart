@@ -1,4 +1,4 @@
-import '../utilities/note_model.dart';
+import '../utilities/note_provider.dart';
 
 class Sync{
 
