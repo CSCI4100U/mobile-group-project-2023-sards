@@ -85,6 +85,7 @@ class _NoteFormState extends State<NoteForm> {
               decoration: const InputDecoration(
                 labelText: 'Text',
               ),
+              keyboardType: TextInputType.multiline,
             ),
             ElevatedButton(
               onPressed: () {
