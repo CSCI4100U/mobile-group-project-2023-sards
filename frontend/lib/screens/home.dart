@@ -3,10 +3,11 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:kanjou/screens/create_note.dart';
+import 'package:kanjou/screens/custom_drawer.dart';
 import 'package:kanjou/utilities/note_model.dart';
 import 'package:kanjou/models/note.dart';
 import 'package:kanjou/screens/settings_page.dart';
-import 'package:kanjou/screens/log_in.dart';
+import 'package:kanjou/screens/sign_in.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
@@ -181,30 +182,7 @@ class _HomePageState extends State<HomePage> {
         onPressed: addGrade,
         child: const Icon(Icons.edit_note_sharp),
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(child: Text("Account details here later")),
-            ListTile(
-              title: const Text('Settings'),
-              // selected: _selectedIndex == 0,
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => SettingsPage()));
-              },
-            ),
-            ListTile(
-              title: const Text('Log In'),
-              // selected: _selectedIndex == 0,
-              onTap: () {
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => LogIn()));
-              },
-            )
-          ],
-        ),
-      ),
+      drawer: CustomDrawer(),
     );
   }
 }
