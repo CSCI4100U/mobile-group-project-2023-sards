@@ -1,12 +1,8 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:kanjou/models/note.dart';
-import 'package:uuid/uuid.dart';
-
 
 class DatabaseHelper {
-  var uuid = const Uuid();
-
   static Future<Database> _init() async {
     // set up the database
     String databasesPath = await getDatabasesPath();
@@ -36,20 +32,8 @@ class DatabaseHelper {
     });
   }
 
-  Future<int> insertNote(Map<String, dynamic> dataMap) async {
+  Future<int> insertNote(Note note) async {
     final db = await _init();
-    Note note = Note.fromMap({
-      ...dataMap,
-      'date': DateTime.now().toString(),
-      'id': uuid.v4(),
-
-      // 'color': dataMap['color'],
-      // 'isImportant': dataMap['isImportant'],
-      // 'isArchived': dataMap['isArchived'],
-      // 'isDeleted': dataMap['isDeleted'],
-      // 'isSynced': dataMap['isSynced'],
-      // 'reference': dataMap['reference'],
-    });
     return await db.insert('notes', note.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
   }

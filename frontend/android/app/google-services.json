@@ -1,0 +1,54 @@
+{
+    "project_info": {
+      "project_number": "333958828802",
+      "project_id": "kanjou-app",
+      "storage_bucket": "kanjou-app.appspot.com"
+    },
+    "client": [
+      {
+        "client_info": {
+          "mobilesdk_app_id": "1:333958828802:android:a80d68ec154f25d1ef681b",
+          "android_client_info": {
+            "package_name": "com.example.kanjou"
+          }
+        },
+        "oauth_client": [
+          {
+            "client_id": "333958828802-ejbhto4cpk6j41mc5a35f0nq6h4a74kv.apps.googleusercontent.com",
+            "client_type": 1,
+            "android_info": {
+              "package_name": "com.example.kanjou",
+              "certificate_hash": "014c95020550933fed84e5d1454fcb117524a120"
+            }
+          },
+          {
+            "client_id": "333958828802-lsg28j62aekbrui66l179bu4pnq44vj1.apps.googleusercontent.com",
+            "client_type": 3
+          }
+        ],
+        "api_key": [
+          {
+            "current_key": "AIzaSyB3dKN8WZ6R_aTTsKO2D4-Azl5HeCLif60"
+          }
+        ],
+        "services": {
+          "appinvite_service": {
+            "other_platform_oauth_client": [
+              {
+                "client_id": "333958828802-lsg28j62aekbrui66l179bu4pnq44vj1.apps.googleusercontent.com",
+                "client_type": 3
+              },
+              {
+                "client_id": "333958828802-588n2rg26f8l0cii93s3m8ck68cr09pa.apps.googleusercontent.com",
+                "client_type": 2,
+                "ios_info": {
+                  "bundle_id": "com.example.kanjou.RunnerTests"
+                }
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "configuration_version": "1"
+  }
