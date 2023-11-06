@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tesseract_ocr/android_ios.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:speech_to_text/speech_recognition_result.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 
 class NoteForm extends StatefulWidget {
+  
   const NoteForm({Key? key, this.noteData}) : super(key: key);
-
   final Map<String, dynamic>? noteData;
 
   @override
@@ -17,12 +19,22 @@ class _NoteFormState extends State<NoteForm> {
   late TextEditingController _titleController;
   late TextEditingController _textController;
   File? image;
+  bool isListening = false;
+  bool _speechToTextEnabled = false;
+  SpeechToText speechToText = SpeechToText();
+
 
   @override
   void initState() {
     super.initState();
     _titleController = TextEditingController(text: widget.noteData?['title'] ?? "");
     _textController = TextEditingController(text: widget.noteData?['text'] ?? "");
+    _initSpeech();
+  }
+
+  void _initSpeech() async  {
+    _speechToTextEnabled = await speechToText.initialize(); // init stt only once per app session
+    setState(() {});
   }
 
   @override
@@ -38,13 +50,23 @@ class _NoteFormState extends State<NoteForm> {
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
       if(image == null) return;
       return image.path;
-      // final imageTemp = File(image.path);
-
-      // setState(() => this.image = imageTemp);
     } on PlatformException catch(e) {
       print('Failed to pick image: $e');
     }
   }
+
+  // Populate note content with speech 
+  void onSpeechResult(SpeechRecognitionResult result) {
+    setState(() {
+      isListening = true;
+      _textController.text += result.recognizedWords;
+    });
+  }
+
+  final micOnSnackbar = SnackBar(
+    content: Text('Listening'),
+    
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -53,18 +75,30 @@ class _NoteFormState extends State<NoteForm> {
         title: const Text('Add a Note'),
         actions: [
           IconButton(
-            onPressed: () {/* TODO: Implement Speech-To-Text Functionality */},
+            onPressed: () {
+              if(_speechToTextEnabled) {
+                if(!isListening) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Listening!')));
+                  speechToText.listen(
+                    onResult: onSpeechResult
+                  );
+                }
+                else {
+                  speechToText.stop();
+                  setState(() {
+                    isListening = false;
+                  });
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Stopped Listening')));
+                }
+              }
+            },
             icon: Icon(Icons.mic)
           ),
           IconButton(
             onPressed: () async {
              var imagePath = await pickImageFromGallery();
-            //  print(imagePath);
-
              String text = await FlutterTesseractOcr.extractText(imagePath);
-
-              _textController.text = text;
-
+              _textController.text += text;
             },
             icon: Icon(Icons.document_scanner_outlined)
           )

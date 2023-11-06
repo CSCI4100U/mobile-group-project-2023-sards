@@ -13,6 +13,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 
 import 'package:speech_to_text/speech_to_text.dart';
+import 'package:speech_to_text/speech_to_text_provider.dart';
 
 const months = {
   1: 'Jan',
@@ -50,11 +51,24 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  SpeechToText _speechToText = SpeechToText(); // Init STT once per application session
+  // final SpeechToTextProvider _speechToText = SpeechToTextProvider();
+
+  // bool _speechToTextEnabled = false;  // Use to check if stt is initialized
   final _model = NotesModel();
   // List<Note> note = [];
 
   bool _searchBoolean = false;
+
+  // @override 
+  // void initState() {
+  //   super.initState();
+  //   _initSpeech();
+  // }
+
+  // void _initSpeech() async  {
+  //   _speechToTextEnabled = await _speechToText.initialize(); // init stt only once per app session
+  //   setState(() {});
+  // }
 
   Widget _buildSearchField() {
     return TextField(
@@ -84,6 +98,7 @@ class _HomePageState extends State<HomePage> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => NoteForm(
+                          // speechToText: _speechToText,
                           noteData: note.toMap(),
                         )));
           },
@@ -149,7 +164,7 @@ class _HomePageState extends State<HomePage> {
     // These methods have to be inside the build method because they use context
     addGrade() async {
       Map<String, dynamic> data = await Navigator.push(
-          context, MaterialPageRoute(builder: (context) => const NoteForm()));
+          context, MaterialPageRoute(builder: (context) => NoteForm()));
 
       if (data != null) {
         await notesModel.insertNote(data);
