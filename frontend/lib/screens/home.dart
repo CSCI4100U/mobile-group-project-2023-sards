@@ -13,6 +13,8 @@ import 'package:kanjou/screens/sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 
+import 'package:speech_to_text/speech_to_text.dart';
+
 const months = {
   1: 'Jan',
   2: 'Feb',
@@ -49,6 +51,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  SpeechToText _speechToText = SpeechToText(); // Init STT once per application session
   // List<Note> note = [];
 
   bool _searchBoolean = false;
