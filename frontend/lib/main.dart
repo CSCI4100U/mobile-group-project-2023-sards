@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kanjou/screens/home.dart';
-import 'package:kanjou/utilities/note_model.dart';
+import 'package:kanjou/utilities/note_provider.dart';
 
 import 'package:json_theme/json_theme.dart';
 
@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create: (context) => NotesModel(),
+        create: (context) => NotesProvider(),
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           // add custom theme later
