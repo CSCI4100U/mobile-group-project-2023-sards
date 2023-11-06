@@ -3,17 +3,15 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:kanjou/screens/create_note.dart';
+import 'package:kanjou/utilities/note_provider.dart';
 import 'package:kanjou/screens/custom_drawer.dart';
-import 'package:kanjou/utilities/note_model.dart';
+
 import 'package:kanjou/models/note.dart';
 import 'package:kanjou/screens/settings_page.dart';
 import 'package:kanjou/screens/sign_in.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
-
-import 'package:speech_to_text/speech_to_text.dart';
-import 'package:speech_to_text/speech_to_text_provider.dart';
 
 const months = {
   1: 'Jan',
@@ -51,24 +49,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // final SpeechToTextProvider _speechToText = SpeechToTextProvider();
-
-  // bool _speechToTextEnabled = false;  // Use to check if stt is initialized
-  final _model = NotesModel();
   // List<Note> note = [];
 
   bool _searchBoolean = false;
 
-  // @override 
-  // void initState() {
-  //   super.initState();
-  //   _initSpeech();
-  // }
 
-  // void _initSpeech() async  {
-  //   _speechToTextEnabled = await _speechToText.initialize(); // init stt only once per app session
-  //   setState(() {});
-  // }
 
   Widget _buildSearchField() {
     return TextField(
@@ -81,7 +66,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildListOfNotes(NotesModel notesModel) {
+  Widget _buildListOfNotes(NotesProvider providerNotes) {
     return MasonryGridView.count(
       padding: EdgeInsets.zero,
       shrinkWrap: true,
@@ -89,22 +74,25 @@ class _HomePageState extends State<HomePage> {
       crossAxisCount: 2,
       mainAxisSpacing: 3,
       crossAxisSpacing: 4,
-      itemCount: notesModel.notes.length,
+      itemCount: providerNotes.notes.length,
       itemBuilder: (context, index) {
-        final note = notesModel.notes[index];
+        final note = providerNotes.notes[index];
         return GestureDetector(
-          onTap: () {
-            Navigator.push(
+          onTap: () async{
+            Map<String,dynamic> noteMap = await Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => NoteForm(
                           // speechToText: _speechToText,
                           noteData: note.toMap(),
                         )));
+            if(noteMap != null){
+              await providerNotes.updateNote(noteMap, index);
+            }
           },
-          onLongPress: () {
-            notesModel.deleteNote(
-                note); // This is a temporary solution, will be changed later
+          onLongPress: () async{
+            await providerNotes.deleteNote(
+                index); // This is a temporary solution, will be changed later
           },
           child: Card(
               color: const Color.fromARGB(255, 23, 23, 23),
@@ -159,15 +147,15 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     // CollectionReference notesCollection =
     // FirebaseFirestore.instance.collection('notes');
-    final notesModel = Provider.of<NotesModel>(context);
+    final providerNotes = Provider.of<NotesProvider>(context);
 
     // These methods have to be inside the build method because they use context
-    addGrade() async {
+    addNote() async {
       Map<String, dynamic> data = await Navigator.push(
           context, MaterialPageRoute(builder: (context) => NoteForm()));
 
       if (data != null) {
-        await notesModel.insertNote(data);
+        providerNotes.insertNote(data);
       }
     }
 
@@ -192,12 +180,12 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
-          Expanded(child: _buildListOfNotes(notesModel)),
+          Expanded(child: _buildListOfNotes(providerNotes)),
         ],
       ),
       floatingActionButton: FloatingActionButton(
         tooltip: 'Add Notes!',
-        onPressed: addGrade,
+        onPressed: addNote,
         child: const Icon(Icons.edit_note_sharp),
       ),
       drawer: CustomDrawer(),
