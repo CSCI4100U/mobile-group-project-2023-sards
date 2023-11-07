@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tesseract_ocr/android_ios.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:jumping_dot/jumping_dot.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
@@ -63,7 +64,7 @@ class _NoteFormState extends State<NoteForm> {
     });
   }
 
-  final micOnSnackbar = SnackBar(
+  final micOnSnackbar = const SnackBar(
     content: Text('Listening'),
     
   );
@@ -78,7 +79,22 @@ class _NoteFormState extends State<NoteForm> {
             onPressed: () {
               if(_speechToTextEnabled) {
                 if(!isListening) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Listening!')));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: Row(
+                            children: [
+                              const Text('Listening'),
+                              const SizedBox(width: 0.5),
+                              JumpingDots(color: Colors.black38,
+                              radius: 5,
+                              numberOfDots: 3,
+                              animationDuration: const Duration(milliseconds: 200),
+                              )
+                            ],
+                          ),
+                      backgroundColor: const Color.fromRGBO(249, 207, 88, 100)
+                      )
+                  );
                   speechToText.listen(
                     onResult: onSpeechResult
                   );
@@ -88,11 +104,11 @@ class _NoteFormState extends State<NoteForm> {
                   setState(() {
                     isListening = false;
                   });
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Stopped Listening')));
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Stopped Listening')));
                 }
               }
             },
-            icon: Icon(Icons.mic)
+            icon: const Icon(Icons.mic)
           ),
           IconButton(
             onPressed: () async {
@@ -100,7 +116,7 @@ class _NoteFormState extends State<NoteForm> {
              String text = await FlutterTesseractOcr.extractText(imagePath);
               _textController.text += text;
             },
-            icon: Icon(Icons.document_scanner_outlined)
+            icon: const Icon(Icons.document_scanner_outlined)
           )
         ],
       ),

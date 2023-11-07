@@ -46,6 +46,8 @@ dependencies:
   image_picker: ^1.0.4
   firebase_auth: ^4.12.1
   google_sign_in: ^6.1.5
+  speech_to_text: ^6.4.0
+  jumping_dot:
 
 dev_dependencies:
   flutter_test:
