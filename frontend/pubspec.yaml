@@ -48,6 +48,7 @@ dependencies:
   google_sign_in: ^6.1.5
   speech_to_text: ^6.4.0
   jumping_dot:
+  flutter_tts: ^3.8.3
 
 dev_dependencies:
   flutter_test:
