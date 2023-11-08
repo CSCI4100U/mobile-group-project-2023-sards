@@ -6,6 +6,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:jumping_dot/jumping_dot.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
+import 'package:flutter_tts/flutter_tts.dart';
+
+/// TODO: 
+/// Implement text to speech
+/// Cleanup UI 
 
 class NoteForm extends StatefulWidget {
   
@@ -23,7 +28,7 @@ class _NoteFormState extends State<NoteForm> {
   bool isListening = false;
   bool _speechToTextEnabled = false;
   SpeechToText speechToText = SpeechToText();
-
+  FlutterTts flutterTts = FlutterTts();
 
   @override
   void initState() {
@@ -31,6 +36,7 @@ class _NoteFormState extends State<NoteForm> {
     _titleController = TextEditingController(text: widget.noteData?['title'] ?? "");
     _textController = TextEditingController(text: widget.noteData?['text'] ?? "");
     _initSpeech();
+    _initTts();
   }
 
   void _initSpeech() async  {
@@ -64,10 +70,26 @@ class _NoteFormState extends State<NoteForm> {
     });
   }
 
-  final micOnSnackbar = const SnackBar(
-    content: Text('Listening'),
-    
-  );
+   _initTts() async {
+    flutterTts = FlutterTts();
+    await flutterTts.awaitSpeakCompletion(true);
+    var engine = await flutterTts.getDefaultEngine;
+    var voice = await flutterTts.getDefaultVoice;
+   }
+
+  // speak TTS
+  Future _speak(String text) async {
+    await flutterTts.setVolume(1);
+    await flutterTts.setSpeechRate(0.5);
+    // await flutterTts.setPitch(1);
+    var result = await flutterTts.speak(text);
+    await _stop();
+  }
+
+  // stop TTS
+  Future _stop() async {
+    var result = await flutterTts.stop();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -126,12 +148,63 @@ class _NoteFormState extends State<NoteForm> {
           children: [
             TextField(
               controller: _titleController,
+              contextMenuBuilder: (context, editableTextState) {
+                return AdaptiveTextSelectionToolbar.buttonItems(
+                  anchors: editableTextState.contextMenuAnchors,
+                  buttonItems: <ContextMenuButtonItem>[
+                    ContextMenuButtonItem(
+                      label: 'Text to Speech',
+                      onPressed: () {
+                        _speak(_textController.text);
+                      }
+                    ),
+                    ContextMenuButtonItem(
+                      onPressed: () {
+                        editableTextState.copySelection(SelectionChangedCause.toolbar);
+                      },
+                      type: ContextMenuButtonType.copy,
+                    ),
+                    ContextMenuButtonItem(
+                      onPressed: () {
+                        editableTextState.selectAll(SelectionChangedCause.toolbar);
+                      },
+                      type: ContextMenuButtonType.selectAll,
+                    ),
+                  ],
+                );
+              },
               decoration: const InputDecoration(
                 labelText: 'Title',
               ),
             ),
+            
             TextField(
               controller: _textController,
+              contextMenuBuilder: (context, editableTextState) {
+                return AdaptiveTextSelectionToolbar.buttonItems(
+                  anchors: editableTextState.contextMenuAnchors,
+                  buttonItems: <ContextMenuButtonItem>[
+                    ContextMenuButtonItem(
+                      label: 'Text to Speech',
+                      onPressed: () {
+                        _speak(_textController.text);
+                      }
+                    ),
+                    ContextMenuButtonItem(
+                      onPressed: () {
+                        editableTextState.copySelection(SelectionChangedCause.toolbar);
+                      },
+                      type: ContextMenuButtonType.copy,
+                    ),
+                    ContextMenuButtonItem(
+                      onPressed: () {
+                        editableTextState.selectAll(SelectionChangedCause.toolbar);
+                      },
+                      type: ContextMenuButtonType.selectAll,
+                    ),
+                  ],
+                );
+              },
               decoration: const InputDecoration(
                 labelText: 'Text',
               ),
@@ -153,3 +226,4 @@ class _NoteFormState extends State<NoteForm> {
     );
   }
 }
+
