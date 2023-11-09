@@ -132,7 +132,8 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ],
                 ),
-              )),
+              )
+          ),
         );
       },
     );
@@ -159,13 +160,16 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: _searchBoolean ? _buildSearchField() : null,
         actions: <Widget>[
-          IconButton(
-            onPressed: () {
-              setState(() {
-                _searchBoolean = !_searchBoolean;
-              });
-            },
-            icon: Icon(_searchBoolean ? Icons.clear : Icons.search),
+          Transform.scale(
+            scale: 1.5, // Increase the size
+            child: IconButton(
+              onPressed: () {
+                setState(() {
+                  _searchBoolean = !_searchBoolean;
+                });
+              },
+              icon: Icon(_searchBoolean ? Icons.clear : Icons.search),
+            ),
           ),
           // Icon which opens the CustomDrawer()
           IconButton(
@@ -188,10 +192,13 @@ class _HomePageState extends State<HomePage> {
           Expanded(child: _buildListOfNotes(providerNotes)),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        tooltip: 'Add Notes!',
-        onPressed: addNote,
-        child: const Icon(Icons.edit_note_sharp),
+      floatingActionButton: Transform.scale(
+        scale: 1.2, // Increase the size
+        child: FloatingActionButton(
+          tooltip: 'Add a Note',
+          onPressed: addNote,
+          child: const Icon(Icons.edit_note_sharp),
+        ),
       ),
       drawer: CustomDrawer(),
     );
