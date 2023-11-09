@@ -152,7 +152,7 @@ class _HomePageState extends State<HomePage> {
           context, MaterialPageRoute(builder: (context) => NoteForm()));
 
       if (data != null) {
-        providerNotes.insertNote(data);
+        await providerNotes.insertNote(data);
       }
     }
 

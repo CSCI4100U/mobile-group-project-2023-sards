@@ -28,7 +28,7 @@ class NotesProvider extends ChangeNotifier {
     _init();
   }
 
-  void _init() async {
+  Future<void> _init() async {
     _notes = await localDb.getAllNotes();
     notifyListeners();
   }

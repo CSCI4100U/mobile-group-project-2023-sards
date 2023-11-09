@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -17,17 +16,23 @@ class _SettingsPageState extends State<SettingsPage> {
   bool _sync = false;
   bool _theme = false;
 
-  @override
-  void initState() async{
-    super.initState();
+  Future<void> _init() async{
     prefs = await SharedPreferences.getInstance();
-    try{
-      _notif = prefs.getBool(_notifKey) ?? false;
-      _sync = prefs.getBool(_syncKey) ?? false;
-      _theme = prefs.getBool(_themeKey) ?? false;
-    } catch(error){
-      debugPrint(error.toString());
-    }
+    setState((){
+      try {
+        _notif = prefs.getBool(_notifKey) ?? false;
+        _sync = prefs.getBool(_syncKey) ?? false;
+        _theme = prefs.getBool(_themeKey) ?? false;
+      } catch (error) {
+        debugPrint(error.toString());
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _init();
   }
 
   @override
