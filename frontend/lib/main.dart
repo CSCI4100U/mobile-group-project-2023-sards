@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kanjou/screens/home.dart';
-import 'package:kanjou/utilities/note_provider.dart';
+import 'package:kanjou/providers/note_provider.dart';
 
 import 'package:json_theme/json_theme.dart';
 

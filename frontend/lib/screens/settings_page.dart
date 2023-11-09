@@ -1,17 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
 
-
   @override
-  _SettingsPageState createState() => _SettingsPageState();
+  State<SettingsPage> createState() => _SettingsPageState();
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  late SharedPreferences prefs;
+  final String _notifKey = 'notifications';
+  final String _syncKey = 'sync';
+  final String _themeKey = 'lightmode';
   bool _notif = false;
   bool _sync = false;
   bool _theme = false;
+
+  @override
+  void initState() async{
+    super.initState();
+    prefs = await SharedPreferences.getInstance();
+    try{
+      _notif = prefs.getBool(_notifKey) ?? false;
+      _sync = prefs.getBool(_syncKey) ?? false;
+      _theme = prefs.getBool(_themeKey) ?? false;
+    } catch(error){
+      debugPrint(error.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +63,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   onChanged: (bool value) {
                     setState(() {
                       _notif = value;
+                      prefs.setBool(_notifKey, value);
                     }
                     // Add push notif function
                     );
@@ -69,6 +87,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 onChanged: (bool value) {
                   setState(() {
                     _sync = value;
+                    prefs.setBool(_syncKey,value);
                   }
                   // Add Sync function
                   );
@@ -92,6 +111,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 onChanged: (bool value) {
                   setState(() {
                     _theme = value;
+                    prefs.setBool(_themeKey, value);
                   }
                   // Add switch to light mode function
                   );

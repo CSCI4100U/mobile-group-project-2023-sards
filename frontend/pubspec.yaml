@@ -49,6 +49,7 @@ dependencies:
   speech_to_text: ^6.4.0
   jumping_dot:
   flutter_tts: ^3.8.3
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:
