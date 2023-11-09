@@ -37,7 +37,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   json_theme: ^6.3.0
   firebase_core: ^2.20.0
-  flutter_tesseract_ocr:
+  flutter_tesseract_ocr: ^0.4.24
   cloud_firestore: ^4.12.1
   sqflite: ^2.3.0
   sqflite_common_ffi: ^2.3.0+2
@@ -47,7 +47,7 @@ dependencies:
   firebase_auth: ^4.12.1
   google_sign_in: ^6.1.5
   speech_to_text: ^6.4.0
-  jumping_dot:
+  jumping_dot: ^0.0.6
   flutter_tts: ^3.8.3
   shared_preferences: ^2.2.2
 
