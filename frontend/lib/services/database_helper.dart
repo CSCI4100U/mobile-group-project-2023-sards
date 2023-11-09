@@ -19,8 +19,6 @@ class DatabaseHelper {
         )
       ''');
     });
-
-    print("Database Created");
     return database;
   }
 

@@ -14,7 +14,6 @@ class FirestoreHelper {
 
   Future<void> insertNoteCloud(Note note) async {
     Map<String,dynamic> data = note.toMap();
-    data.remove('id');
     return notesCollection
         .add(data)
         .then((value) => print("Note Added $value"))

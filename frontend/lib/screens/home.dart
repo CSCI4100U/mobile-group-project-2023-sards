@@ -7,7 +7,7 @@ import 'package:kanjou/screens/custom_drawer.dart';
 import 'package:kanjou/screens/settings_page.dart';
 import 'package:kanjou/screens/sign_in.dart';
 
-import 'package:kanjou/utilities/note_provider.dart';
+import 'package:kanjou/providers/note_provider.dart';
 import 'package:provider/provider.dart';
 
 const months = {
