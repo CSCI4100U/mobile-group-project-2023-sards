@@ -36,21 +36,16 @@ String convertStringToDate(String date) {
 }
 
 class HomePage extends StatefulWidget {
-  HomePage({Key? key}) : super(key: key);
-
-  // Map<int, bool> selectedNoteIndexes = {};
-  HashSet selectedNoteIndexes = HashSet<int>();
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  // List<Note> note = [];
-
   bool _searchBoolean = false;
-
-
+  HashSet selectedNoteIndexes = HashSet<int>();
+  var scaffoldKey = GlobalKey<ScaffoldState>();
 
   Widget _buildSearchField() {
     return TextField(
@@ -75,19 +70,21 @@ class _HomePageState extends State<HomePage> {
       itemBuilder: (context, index) {
         final note = providerNotes.notes[index];
         return GestureDetector(
-          onTap: () async{
-            Map<String,dynamic> noteMap = await Navigator.push(
+          onTap: () async {
+            Map<String, dynamic>? noteMap = await Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => NoteForm(
                           // speechToText: _speechToText,
                           noteData: note.toMap(),
                         )));
-            if(noteMap != null){
+            if (noteMap != null) {
               await providerNotes.updateNote(noteMap, index);
+            } else {
+              // Show a popup saying that the note was not updated
             }
           },
-          onLongPress: () async{
+          onLongPress: () async {
             await providerNotes.deleteNote(
                 index); // This is a temporary solution, will be changed later
           },
@@ -147,27 +144,56 @@ class _HomePageState extends State<HomePage> {
     final providerNotes = Provider.of<NotesProvider>(context);
 
     // These methods have to be inside the build method because they use context
-    addNote() async {
-      Map<String, dynamic> data = await Navigator.push(
-          context, MaterialPageRoute(builder: (context) => NoteForm()));
-
-      if (data != null) {
-        await providerNotes.insertNote(data);
-      }
+    addNote() {
+      Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const NoteForm()))
+          .then((returnedMap) {
+        // Check if the returned map has the title value or text value empty
+        if (returnedMap != null &&
+            returnedMap.isNotEmpty &&
+            returnedMap['title'] != "" &&
+            returnedMap['text'] != "") {
+          providerNotes.insertNote(returnedMap);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Note successfully saved'),
+            ),
+          );
+        } else {
+          // Show a little notification on the bottom saying that the note was not added
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('The note was not saved'),
+            ),
+          );
+        }
+      });
     }
 
     return Scaffold(
+      key: scaffoldKey,
       appBar: AppBar(
         title: _searchBoolean ? _buildSearchField() : null,
         actions: <Widget>[
+          Transform.scale(
+            scale: 1.5, // Increase the size
+            child: IconButton(
+              onPressed: () {
+                setState(() {
+                  _searchBoolean = !_searchBoolean;
+                });
+              },
+              icon: Icon(_searchBoolean ? Icons.clear : Icons.search),
+            ),
+          ),
+          // Icon which opens the CustomDrawer()
           IconButton(
             onPressed: () {
-              setState(() {
-                _searchBoolean = !_searchBoolean;
-              });
+              scaffoldKey.currentState!.openDrawer();
             },
-            icon: Icon(_searchBoolean ? Icons.clear : Icons.search),
+            icon: const Icon(Icons.settings),
           ),
+
           IconButton(
             onPressed: () {},
             icon: const Icon(Icons.more_vert),
@@ -180,10 +206,13 @@ class _HomePageState extends State<HomePage> {
           Expanded(child: _buildListOfNotes(providerNotes)),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        tooltip: 'Add Notes!',
-        onPressed: addNote,
-        child: const Icon(Icons.edit_note_sharp),
+      floatingActionButton: Transform.scale(
+        scale: 1.2, // Increase the size
+        child: FloatingActionButton(
+          tooltip: 'Add a Note',
+          onPressed: addNote,
+          child: const Icon(Icons.edit_note_sharp),
+        ),
       ),
       drawer: CustomDrawer(),
     );
