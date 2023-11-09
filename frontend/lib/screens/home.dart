@@ -36,21 +36,16 @@ String convertStringToDate(String date) {
 }
 
 class HomePage extends StatefulWidget {
-  HomePage({Key? key}) : super(key: key);
-
-  // Map<int, bool> selectedNoteIndexes = {};
-  HashSet selectedNoteIndexes = HashSet<int>();
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  // List<Note> note = [];
-
   bool _searchBoolean = false;
-
-
+  HashSet selectedNoteIndexes = HashSet<int>();
+  var scaffoldKey = GlobalKey<ScaffoldState>();
 
   Widget _buildSearchField() {
     return TextField(
@@ -76,7 +71,7 @@ class _HomePageState extends State<HomePage> {
         final note = providerNotes.notes[index];
         return GestureDetector(
           onTap: () async{
-            Map<String,dynamic> noteMap = await Navigator.push(
+            Map<String, dynamic>? noteMap = await Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => NoteForm(
@@ -85,6 +80,9 @@ class _HomePageState extends State<HomePage> {
                         )));
             if(noteMap != null){
               await providerNotes.updateNote(noteMap, index);
+            } else {
+              // Show a popup saying that the note was not updated
+
             }
           },
           onLongPress: () async{
@@ -158,6 +156,7 @@ class _HomePageState extends State<HomePage> {
     }
 
     return Scaffold(
+      key: scaffoldKey,
       appBar: AppBar(
         title: _searchBoolean ? _buildSearchField() : null,
         actions: <Widget>[
@@ -172,12 +171,18 @@ class _HomePageState extends State<HomePage> {
               icon: Icon(_searchBoolean ? Icons.clear : Icons.search),
             ),
           ),
-          Transform.scale(
-            scale: 1.5, // Increase the size
-            child: IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.more_vert),
-            ),
+          // Icon which opens the CustomDrawer()
+          IconButton(
+            onPressed: () {
+              scaffoldKey.currentState!.openDrawer();
+            },
+            icon: const Icon(Icons.settings),
+          ),
+
+
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.more_vert),
           ),
         ],
       ),

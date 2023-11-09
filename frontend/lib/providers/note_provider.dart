@@ -10,8 +10,7 @@ import 'package:uuid/uuid.dart';
 class NotesProvider extends ChangeNotifier {
   final localDb = DatabaseHelper();
   final cloudDb = FirestoreHelper();
-  List<Note> _notes = [];
-  List<Note> get notes => [..._notes];
+  List<Note> notes = [];
   var uuid = const Uuid();
 
   NotesProvider() {
@@ -29,13 +28,13 @@ class NotesProvider extends ChangeNotifier {
   }
 
   void _init() async {
-    _notes = await localDb.getAllNotes();
+    notes = await localDb.getAllNotes();
     notifyListeners();
   }
 
   Future<void> deleteNote(int i) async {
-    Note note = _notes[i];
-    _notes.removeAt(i);
+    Note note = notes[i];
+    notes.removeAt(i);
     notifyListeners();
     await localDb.deleteNote(note);
   }
@@ -53,14 +52,14 @@ class NotesProvider extends ChangeNotifier {
       // 'isSynced': dataMap['isSynced'],
       // 'reference': dataMap['reference'],
     });
-    _notes.add(note);
+    notes.add(note);
     notifyListeners();
     await localDb.insertNote(note);
   }
 
   Future<void> updateNote(Map<String, dynamic> noteMap, int i) async {
     Note note = Note.fromMap(noteMap);
-    _notes[i] = note;
+    notes[i] = note;
     notifyListeners();
     await localDb.updateNote(note);
   }
