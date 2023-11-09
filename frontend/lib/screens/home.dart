@@ -70,7 +70,7 @@ class _HomePageState extends State<HomePage> {
       itemBuilder: (context, index) {
         final note = providerNotes.notes[index];
         return GestureDetector(
-          onTap: () async{
+          onTap: () async {
             Map<String, dynamic>? noteMap = await Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -78,14 +78,13 @@ class _HomePageState extends State<HomePage> {
                           // speechToText: _speechToText,
                           noteData: note.toMap(),
                         )));
-            if(noteMap != null){
+            if (noteMap != null) {
               await providerNotes.updateNote(noteMap, index);
             } else {
               // Show a popup saying that the note was not updated
-
             }
           },
-          onLongPress: () async{
+          onLongPress: () async {
             await providerNotes.deleteNote(
                 index); // This is a temporary solution, will be changed later
           },
@@ -132,8 +131,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ],
                 ),
-              )
-          ),
+              )),
         );
       },
     );
@@ -146,13 +144,30 @@ class _HomePageState extends State<HomePage> {
     final providerNotes = Provider.of<NotesProvider>(context);
 
     // These methods have to be inside the build method because they use context
-    addNote() async {
-      Map<String, dynamic> data = await Navigator.push(
-          context, MaterialPageRoute(builder: (context) => NoteForm()));
-
-      if (data != null) {
-        providerNotes.insertNote(data);
-      }
+    addNote() {
+      Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const NoteForm()))
+          .then((returnedMap) {
+        // Check if the returned map has the title value or text value empty
+        if (returnedMap != null &&
+            returnedMap.isNotEmpty &&
+            returnedMap['title'] != "" &&
+            returnedMap['text'] != "") {
+          providerNotes.insertNote(returnedMap);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Note successfully saved'),
+            ),
+          );
+        } else {
+          // Show a little notification on the bottom saying that the note was not added
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('The note was not saved'),
+            ),
+          );
+        }
+      });
     }
 
     return Scaffold(
@@ -178,7 +193,6 @@ class _HomePageState extends State<HomePage> {
             },
             icon: const Icon(Icons.settings),
           ),
-
 
           IconButton(
             onPressed: () {},
