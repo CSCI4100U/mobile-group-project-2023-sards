@@ -17,18 +17,18 @@ class _SettingsPageState extends State<SettingsPage> {
   bool _sync = false;
   bool _theme = false;
 
-  @override
-  void initState() async{
-    super.initState();
-    prefs = await SharedPreferences.getInstance();
-    try{
-      _notif = prefs.getBool(_notifKey) ?? false;
-      _sync = prefs.getBool(_syncKey) ?? false;
-      _theme = prefs.getBool(_themeKey) ?? false;
-    } catch(error){
-      debugPrint(error.toString());
-    }
-  }
+  // @override
+  // void initState() async{
+  //   super.initState();
+  //   prefs = await SharedPreferences.getInstance();
+  //   try{
+  //     _notif = prefs.getBool(_notifKey) ?? false;
+  //     _sync = prefs.getBool(_syncKey) ?? false;
+  //     _theme = prefs.getBool(_themeKey) ?? false;
+  //   } catch(error){
+  //     debugPrint(error.toString());
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
