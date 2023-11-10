@@ -144,7 +144,7 @@ class _NoteFormState extends State<NoteForm> {
           IconButton(
           onPressed: () {listenToSpeech(context);},
           icon: const Icon(Icons.mic),
-          tooltip: 'Speach To Text')
+          tooltip: 'Speech To Text')
           ),
           const SizedBox(width: 12),
           makeBigger(IconButton(
@@ -163,7 +163,8 @@ class _NoteFormState extends State<NoteForm> {
           children: [
             TextField(
               controller: _titleController,
-              maxLines: null,
+              maxLines: 1,
+              minLines: 1,
               contextMenuBuilder: (context, editableTextState) {
                 return AdaptiveTextSelectionToolbar.buttonItems(
                   anchors: editableTextState.contextMenuAnchors,
@@ -196,7 +197,8 @@ class _NoteFormState extends State<NoteForm> {
             ),
             TextField(
               controller: _textController,
-              maxLines: null,
+              maxLines: 15,
+              minLines: 1,
               contextMenuBuilder: (context, editableTextState) {
                 return AdaptiveTextSelectionToolbar.buttonItems(
                   anchors: editableTextState.contextMenuAnchors,

@@ -123,7 +123,7 @@ class _HomePageState extends State<HomePage> {
                             : "No date",
                         maxLines: 1,
                         style: const TextStyle(
-                          color: const Color.fromARGB(255, 111, 111, 111),
+                          color: Color.fromARGB(255, 111, 111, 111),
                           fontSize: 12,
                         ),
                       ),
@@ -226,7 +226,7 @@ class _HomePageState extends State<HomePage> {
           child: const Icon(Icons.edit_note_sharp),
         ),
       ),
-      drawer: CustomDrawer(),
+      drawer: const CustomDrawer(),
     );
   }
 }
