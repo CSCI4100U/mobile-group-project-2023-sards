@@ -6,9 +6,10 @@ import 'package:kanjou/screens/create_note.dart';
 import 'package:kanjou/screens/custom_drawer.dart';
 import 'package:kanjou/screens/settings_page.dart';
 import 'package:kanjou/screens/sign_in.dart';
-
+import 'package:kanjou/providers/settings_provider.dart';
 import 'package:kanjou/providers/note_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:kanjou/services/sync.dart';
 
 const months = {
   1: 'Jan',
@@ -149,7 +150,7 @@ class _HomePageState extends State<HomePage> {
     // CollectionReference notesCollection =
     // FirebaseFirestore.instance.collection('notes');
     final providerNotes = Provider.of<NotesProvider>(context);
-
+    final providerSettings = Provider.of<SettingsProvider>(context);
     // These methods have to be inside the build method because they use context
     addNote() {
       Navigator.push(context,
@@ -166,6 +167,9 @@ class _HomePageState extends State<HomePage> {
               content: Text('Note successfully saved'),
             ),
           );
+          if(providerSettings.sync){
+            Sync.uploadToCloud(context);
+          }
         } else {
           // Show a little notification on the bottom saying that the note was not added
           ScaffoldMessenger.of(context).showSnackBar(
