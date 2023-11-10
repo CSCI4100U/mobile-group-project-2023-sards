@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../providers/settings_provider.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -9,31 +12,9 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  late SharedPreferences prefs;
-  final String _notifKey = 'notifications';
-  final String _syncKey = 'sync';
-  final String _themeKey = 'lightmode';
-  bool _notif = false;
-  bool _sync = false;
-  bool _theme = false;
-
-  @override
-  void initState() {
-    super.initState();
-    SharedPreferences.getInstance().then((SharedPreferences value) {
-      prefs = value;
-      try {
-        _notif = prefs.getBool(_notifKey) ?? false;
-        _sync = prefs.getBool(_syncKey) ?? false;
-        _theme = prefs.getBool(_themeKey) ?? false;
-      } catch (error) {
-        debugPrint(error.toString());
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    SettingsProvider providerSettings = Provider.of<SettingsProvider>(context);
     return Scaffold(
       appBar: AppBar(
         leading: Builder(
@@ -58,14 +39,10 @@ class _SettingsPageState extends State<SettingsPage> {
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(0, 12, 0, 0),
             child: SwitchListTile.adaptive(
-              value: _notif,
+              value: providerSettings.notifications,
               onChanged: (bool value) {
-                setState(() {
-                  _notif = value;
-                  prefs.setBool(_notifKey, value);
-                }
-                    // Add push notif function
-                    );
+                providerSettings.notifications = value;
+                // Add push notif function
               },
               title: const Text(
                 "Push Notifications",
@@ -83,14 +60,11 @@ class _SettingsPageState extends State<SettingsPage> {
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(0, 12, 0, 0),
             child: SwitchListTile.adaptive(
-              value: _sync,
+              value: providerSettings.sync,
               onChanged: (bool value) {
-                setState(() {
-                  _sync = value;
-                  prefs.setBool(_syncKey, value);
-                }
-                    // Add Sync function
-                    );
+                providerSettings.sync = value;
+
+                // Add Sync function
               },
               title: const Text(
                 "Sync To Cloud",
@@ -108,14 +82,10 @@ class _SettingsPageState extends State<SettingsPage> {
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(0, 12, 0, 0),
             child: SwitchListTile.adaptive(
-              value: _theme,
+              value: providerSettings.lightmode,
               onChanged: (bool value) {
-                setState(() {
-                  _theme = value;
-                  prefs.setBool(_themeKey, value);
-                }
-                    // Add switch to light mode function
-                    );
+                providerSettings.lightmode = value;
+                // Add switch to light mode function
               },
               title: const Text(
                 "Light Mode",

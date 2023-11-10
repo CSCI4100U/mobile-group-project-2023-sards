@@ -24,10 +24,10 @@ class NotesProvider extends ChangeNotifier {
     // databaseFactory = databaseFactoryFfi;
 
     // db = DatabaseHelper.init();
-    _init();
+    refresh();
   }
 
-  Future<void> _init() async {
+  Future<void> refresh() async {
     notes = await localDb.getAllNotes();
     notifyListeners();
   }
