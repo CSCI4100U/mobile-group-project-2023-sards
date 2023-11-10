@@ -102,15 +102,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
           //   ),
           // ),
           ListTile(
-            title: const Text('Settings'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const SettingsPage()),
-              );
-            },
-          ),
-          ListTile(
             title: Text(_user == null ? 'Sign In' : "Sign Out"),
             onTap: () async {
               if (_user != null) {

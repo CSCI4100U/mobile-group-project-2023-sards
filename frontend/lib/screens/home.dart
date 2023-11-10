@@ -35,6 +35,13 @@ String convertStringToDate(String date) {
   }
 }
 
+Transform makeBigger(IconButton icon) {
+  return Transform.scale(
+    scale: 1.5,
+    child: icon,
+  );
+}
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -169,35 +176,40 @@ class _HomePageState extends State<HomePage> {
         }
       });
     }
-
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
+        leading: makeBigger(IconButton(icon: const Icon(Icons.menu),
+          onPressed: (){scaffoldKey.currentState!.openDrawer();},
+          tooltip: 'User Information',)),
         title: _searchBoolean ? _buildSearchField() : null,
         actions: <Widget>[
-          Transform.scale(
-            scale: 1.5, // Increase the size
-            child: IconButton(
-              onPressed: () {
-                setState(() {
-                  _searchBoolean = !_searchBoolean;
-                });
-              },
-              icon: Icon(_searchBoolean ? Icons.clear : Icons.search),
-            ),
-          ),
-          // Icon which opens the CustomDrawer()
-          IconButton(
+          makeBigger(IconButton(
             onPressed: () {
-              scaffoldKey.currentState!.openDrawer();
+              setState(() {
+                _searchBoolean = !_searchBoolean;
+              });
             },
+            icon: Icon(_searchBoolean ? Icons.clear : Icons.search),
+            tooltip: 'Search for a note',
+          )),
+          const SizedBox(width: 12),
+          makeBigger(IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                  MaterialPageRoute(builder: (context) => const SettingsPage()));
+              },
             icon: const Icon(Icons.settings),
-          ),
-
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.more_vert),
-          ),
+            tooltip: 'Settings',
+          )),
+          // Transform.scale(
+          //   scale: 1.5,
+          //   child: IconButton(
+          //     onPressed: () {},
+          //     icon: const Icon(Icons.more_vert),
+          //   ),
+          // )
         ],
       ),
       body: Column(

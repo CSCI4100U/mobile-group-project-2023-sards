@@ -7,9 +7,9 @@ import 'package:jumping_dot/jumping_dot.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:kanjou/screens/home.dart';
 
 /// TODO:
-/// Implement text to speech
 /// Cleanup UI
 
 class NoteForm extends StatefulWidget {
@@ -134,25 +134,27 @@ class _NoteFormState extends State<NoteForm> {
       });
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add a Note'),
         actions: [
+          makeBigger(
           IconButton(
-              onPressed: () {
-                listenToSpeech(context);
-              },
-              icon: const Icon(Icons.mic)),
-          IconButton(
+          onPressed: () {listenToSpeech(context);},
+          icon: const Icon(Icons.mic),
+          tooltip: 'Speach To Text')
+          ),
+          const SizedBox(width: 12),
+          makeBigger(IconButton(
               onPressed: () async {
                 var imagePath = await pickImageFromGallery();
                 String text = await FlutterTesseractOcr.extractText(imagePath);
                 _textController.text += text;
               },
-              icon: const Icon(Icons.document_scanner_outlined))
+              icon: const Icon(Icons.document_scanner_outlined),
+          tooltip: 'Get Text From Image',))
         ],
       ),
       body: Padding(
@@ -161,6 +163,7 @@ class _NoteFormState extends State<NoteForm> {
           children: [
             TextField(
               controller: _titleController,
+              maxLines: null,
               contextMenuBuilder: (context, editableTextState) {
                 return AdaptiveTextSelectionToolbar.buttonItems(
                   anchors: editableTextState.contextMenuAnchors,
@@ -193,6 +196,7 @@ class _NoteFormState extends State<NoteForm> {
             ),
             TextField(
               controller: _textController,
+              maxLines: null,
               contextMenuBuilder: (context, editableTextState) {
                 return AdaptiveTextSelectionToolbar.buttonItems(
                   anchors: editableTextState.contextMenuAnchors,
@@ -224,17 +228,19 @@ class _NoteFormState extends State<NoteForm> {
               ),
               keyboardType: TextInputType.multiline,
             ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context, {
-                  ...widget.noteData ??
-                      {}, // Append the prefilled data from the widget
-                  'title': _titleController.text,
-                  'text': _textController.text,
-                });
-              },
-              child: const Text('Add Note'),
-            ),
+            Padding(padding: const EdgeInsetsDirectional.fromSTEB(0, 12, 0, 0),
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context, {
+                    ...widget.noteData ??
+                        {}, // Append the prefilled data from the widget
+                    'title': _titleController.text,
+                    'text': _textController.text,
+                  });
+                },
+                child: const Text('Add Note'),
+              ),
+            )
           ],
         ),
       ),
