@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../providers/settings_provider.dart';
+import '../services/sync.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -101,7 +102,10 @@ class _SettingsPageState extends State<SettingsPage> {
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(0, 24, 0, 0),
             child: ElevatedButton(
-              onPressed: () {}, // Add functionality
+              onPressed: () {
+                Sync.importFromCloud();
+                // TODO: Add snackbar showing that data was added
+              },
               style: ElevatedButton.styleFrom(
                 // Add theme color and font later
                 fixedSize: const Size.fromHeight(50),
