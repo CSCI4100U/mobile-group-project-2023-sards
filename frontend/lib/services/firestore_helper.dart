@@ -1,20 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kanjou/models/note.dart';
 
-
-class FirestoreHelper{
+class FirestoreHelper {
   final notesCollection = FirebaseFirestore.instance.collection('notes');
 
   Future<List<Note>> getAllNotesCloud() async {
     final QuerySnapshot snapshot = await notesCollection.get();
     return snapshot.docs
-        .map((doc) => Note.fromMap(doc.data() as Map<String, dynamic>))
+        .map((doc) =>
+            Note.fromMap({...doc.data() as Map<String, dynamic>, 'id': doc.id}))
         .toList();
   }
 
   Future<void> insertNoteCloud(Note note) async {
+    Map<String,dynamic> data = note.toMap();
     return notesCollection
-        .add(note.toMap())
+        .add(data)
         .then((value) => print("Note Added $value"))
         .catchError((error) => print("Failed to add note: $error"));
   }

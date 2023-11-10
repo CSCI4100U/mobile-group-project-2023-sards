@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kanjou/screens/home.dart';
-import 'package:kanjou/utilities/note_provider.dart';
+import 'package:kanjou/providers/note_provider.dart';
+import 'package:kanjou/providers/settings_provider.dart';
 
 import 'package:json_theme/json_theme.dart';
 
@@ -35,14 +36,16 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        create: (context) => NotesProvider(),
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          // add custom theme later
-          theme: theme,
-          home:
-              HomePage(), // This should call the entry point of the app.
-        ));
+    return MultiProvider(providers: [
+      ChangeNotifierProvider(create: (context) => NotesProvider()),
+      ChangeNotifierProvider(create: (context) => SettingsProvider(), lazy: false,)
+    ],
+      child: MaterialApp(
+      debugShowCheckedModeBanner: false,
+      // add custom theme later
+      theme: theme,
+      home:
+      const HomePage(), // This should call the entry point of the app.
+    ));
   }
 }

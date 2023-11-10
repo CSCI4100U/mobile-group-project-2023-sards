@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:kanjou/screens/home.dart';
-import 'package:kanjou/utilities/auth.dart';
+import 'package:kanjou/services//auth.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({Key? key}) : super(key: key);

@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:kanjou/screens/settings_page.dart';
 import 'package:kanjou/screens/sign_in.dart';
-import 'package:kanjou/utilities/auth.dart';
+import 'package:kanjou/services/auth.dart';
 
 class CustomDrawer extends StatefulWidget {
   const CustomDrawer({Key? key}) : super(key: key);
@@ -101,15 +101,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
           //     ],
           //   ),
           // ),
-          ListTile(
-            title: const Text('Settings'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const SettingsPage()),
-              );
-            },
-          ),
           ListTile(
             title: Text(_user == null ? 'Sign In' : "Sign Out"),
             onTap: () async {
