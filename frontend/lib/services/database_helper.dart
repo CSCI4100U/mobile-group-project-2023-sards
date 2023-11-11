@@ -15,7 +15,8 @@ class DatabaseHelper {
           id TEXT PRIMARY KEY NOT NULL,
           title TEXT NOT NULL,
           text TEXT NOT NULL,
-          date TEXT NOT NULL
+          date TEXT NOT NULL,
+          tagId TEXT
         )
       ''');
       await db.execute(
