@@ -10,21 +10,24 @@ class Note {
   String text; // Change this to raw bytes
   String id;
   String date;
+  String? tagId;
   // final DocumentReference reference;
 
   Note(
       {required this.title,
       required this.text,
       required this.id,
-      required this.date});
+      required this.date,
+      this.tagId});
 
   Map<String, dynamic> toMap() {
-    return {'id': id, 'title': title, 'text': text, 'date': date};
+    return {'id': id, 'title': title, 'text': text, 'date': date, 'tagId': tagId};
   }
 
   Note.fromMap(Map<String, dynamic> noteMap)
       : id = noteMap['id'],
         title = noteMap['title'],
         text = noteMap['text'],
-        date = noteMap['date'];
+        date = noteMap['date'],
+        tagId = noteMap['tagId'];
 }
