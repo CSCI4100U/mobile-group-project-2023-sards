@@ -1,16 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_tesseract_ocr/android_ios.dart';
+import 'package:flutter_tesseract_ocr/flutter_tesseract_ocr.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jumping_dot/jumping_dot.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:kanjou/screens/home.dart';
-
-/// TODO:
-/// Cleanup UI
 
 class NoteForm extends StatefulWidget {
   const NoteForm({Key? key, this.noteData}) : super(key: key);
@@ -23,7 +19,6 @@ class NoteForm extends StatefulWidget {
 class _NoteFormState extends State<NoteForm> {
   late TextEditingController _titleController;
   late TextEditingController _textController;
-  File? image;
   bool isListening = false;
   bool _speechToTextEnabled = false;
   SpeechToText speechToText = SpeechToText();
@@ -46,7 +41,6 @@ class _NoteFormState extends State<NoteForm> {
     super.dispose();
   }
 
-  // Pick images from platform specific gallery
   Future pickImageFromGallery() async {
     try {
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -57,7 +51,6 @@ class _NoteFormState extends State<NoteForm> {
     }
   }
 
-  // Populate note content with speech
   void onSpeechResult(SpeechRecognitionResult result) {
     setState(() {
       isListening = true;
@@ -72,25 +65,17 @@ class _NoteFormState extends State<NoteForm> {
     var voice = await flutterTts.getDefaultVoice;
   }
 
-  // speak TTS
   Future _speak(String text) async {
     await flutterTts.setVolume(1);
     await flutterTts.setSpeechRate(0.5);
-    // await flutterTts.setPitch(1);
     var result = await flutterTts.speak(text);
     await _stop();
   }
 
-  // stop TTS
   Future _stop() async {
     var result = await flutterTts.stop();
   }
 
-  /*
-    * Listen to speech and append to text field
-    * If speech to text is not enabled, enable it and recurse
-    * If speech to text is enabled, listen to speech
-  */
   void listenToSpeech(BuildContext context) {
     if (_speechToTextEnabled) {
       if (!isListening) {
@@ -134,116 +119,138 @@ class _NoteFormState extends State<NoteForm> {
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add a Note'),
+        title: const Text(
+          'Notes',
+          style: TextStyle(color: Colors.yellow),
+        ),
+        iconTheme: IconThemeData(color: Colors.yellow), // Set back arrow color
         actions: [
-          makeBigger(
           IconButton(
-          onPressed: () {listenToSpeech(context);},
-          icon: const Icon(Icons.mic),
-          tooltip: 'Speech To Text')
+            onPressed: () async {
+              var imagePath = await pickImageFromGallery();
+              String text = await FlutterTesseractOcr.extractText(imagePath);
+              _textController.text += text;
+            },
+            icon: const Icon(
+              Icons.document_scanner_outlined,
+              color: Colors.yellow,
+            ),
           ),
-          const SizedBox(width: 12),
-          makeBigger(IconButton(
-              onPressed: () async {
-                var imagePath = await pickImageFromGallery();
-                String text = await FlutterTesseractOcr.extractText(imagePath);
-                _textController.text += text;
-              },
-              icon: const Icon(Icons.document_scanner_outlined),
-          tooltip: 'Get Text From Image',))
+          IconButton(
+            onPressed: () {
+              listenToSpeech(context);
+            },
+            icon: const Icon(
+              Icons.mic,
+              color: Colors.yellow,
+            ),
+          ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _titleController,
-              maxLines: 1,
-              minLines: 1,
-              contextMenuBuilder: (context, editableTextState) {
-                return AdaptiveTextSelectionToolbar.buttonItems(
-                  anchors: editableTextState.contextMenuAnchors,
-                  buttonItems: <ContextMenuButtonItem>[
-                    ContextMenuButtonItem(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextField(
+                controller: _titleController,
+                maxLines: 1,
+                minLines: 1,
+                contextMenuBuilder: (context, editableTextState) {
+                  return AdaptiveTextSelectionToolbar.buttonItems(
+                    anchors: editableTextState.contextMenuAnchors,
+                    buttonItems: <ContextMenuButtonItem>[
+                      ContextMenuButtonItem(
                         label: 'Text to Speech',
                         onPressed: () {
                           _speak(_textController.text);
-                        }),
-                    ContextMenuButtonItem(
-                      onPressed: () {
-                        editableTextState
-                            .copySelection(SelectionChangedCause.toolbar);
-                      },
-                      type: ContextMenuButtonType.copy,
-                    ),
-                    ContextMenuButtonItem(
-                      onPressed: () {
-                        editableTextState
-                            .selectAll(SelectionChangedCause.toolbar);
-                      },
-                      type: ContextMenuButtonType.selectAll,
-                    ),
-                  ],
-                );
-              },
-              decoration: const InputDecoration(
-                labelText: 'Title',
-              ),
-            ),
-            TextField(
-              controller: _textController,
-              maxLines: 15,
-              minLines: 1,
-              contextMenuBuilder: (context, editableTextState) {
-                return AdaptiveTextSelectionToolbar.buttonItems(
-                  anchors: editableTextState.contextMenuAnchors,
-                  buttonItems: <ContextMenuButtonItem>[
-                    ContextMenuButtonItem(
-                        label: 'Text to Speech',
+                        },
+                      ),
+                      ContextMenuButtonItem(
                         onPressed: () {
-                          _speak(_textController.text);
-                        }),
-                    ContextMenuButtonItem(
-                      onPressed: () {
-                        editableTextState
-                            .copySelection(SelectionChangedCause.toolbar);
-                      },
-                      type: ContextMenuButtonType.copy,
-                    ),
-                    ContextMenuButtonItem(
-                      onPressed: () {
-                        editableTextState
-                            .selectAll(SelectionChangedCause.toolbar);
-                      },
-                      type: ContextMenuButtonType.selectAll,
-                    ),
-                  ],
-                );
-              },
-              decoration: const InputDecoration(
-                labelText: 'Text',
-              ),
-              keyboardType: TextInputType.multiline,
-            ),
-            Padding(padding: const EdgeInsetsDirectional.fromSTEB(0, 12, 0, 0),
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context, {
-                    ...widget.noteData ??
-                        {}, // Append the prefilled data from the widget
-                    'title': _titleController.text,
-                    'text': _textController.text,
-                  });
+                          editableTextState
+                              .copySelection(SelectionChangedCause.toolbar);
+                        },
+                        type: ContextMenuButtonType.copy,
+                      ),
+                      ContextMenuButtonItem(
+                        onPressed: () {
+                          editableTextState
+                              .selectAll(SelectionChangedCause.toolbar);
+                        },
+                        type: ContextMenuButtonType.selectAll,
+                      ),
+                    ],
+                  );
                 },
-                child: const Text('Add Note'),
+                decoration: const InputDecoration(
+                  labelText: 'Title',
+                  labelStyle: TextStyle(color: Colors.yellow),
+                ),
               ),
-            )
-          ],
+              const SizedBox(
+                  height: 8), // Added spacing between title and text fields
+              TextField(
+                controller: _textController,
+                maxLines: 15,
+                minLines: 1,
+                contextMenuBuilder: (context, editableTextState) {
+                  return AdaptiveTextSelectionToolbar.buttonItems(
+                    anchors: editableTextState.contextMenuAnchors,
+                    buttonItems: <ContextMenuButtonItem>[
+                      ContextMenuButtonItem(
+                        label: 'Text to Speech',
+                        onPressed: () {
+                          _speak(_textController.text);
+                        },
+                      ),
+                      ContextMenuButtonItem(
+                        onPressed: () {
+                          editableTextState
+                              .copySelection(SelectionChangedCause.toolbar);
+                        },
+                        type: ContextMenuButtonType.copy,
+                      ),
+                      ContextMenuButtonItem(
+                        onPressed: () {
+                          editableTextState
+                              .selectAll(SelectionChangedCause.toolbar);
+                        },
+                        type: ContextMenuButtonType.selectAll,
+                      ),
+                    ],
+                  );
+                },
+                decoration: const InputDecoration(
+                  labelText: 'Text',
+                  labelStyle: TextStyle(color: Colors.yellow),
+                ),
+                keyboardType: TextInputType.multiline,
+              ),
+              const SizedBox(height: 16),
+            ],
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pop(context, {
+            ...widget.noteData ?? {},
+            'title': _titleController.text,
+            'text': _textController.text,
+          });
+        },
+        child: const Icon(Icons.save),
+        backgroundColor: Colors.yellow, // Set button color
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10), // Set button border radius
         ),
       ),
     );

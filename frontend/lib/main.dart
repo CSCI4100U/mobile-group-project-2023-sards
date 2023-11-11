@@ -36,16 +36,20 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(providers: [
-      ChangeNotifierProvider(create: (context) => NotesProvider()),
-      ChangeNotifierProvider(create: (context) => SettingsProvider(), lazy: false,)
-    ],
-      child: MaterialApp(
-      debugShowCheckedModeBanner: false,
-      // add custom theme later
-      theme: theme,
-      home:
-      const HomePage(), // This should call the entry point of the app.
-    ));
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (context) => NotesProvider()),
+          ChangeNotifierProvider(
+            create: (context) => SettingsProvider(),
+            lazy: false,
+          )
+        ],
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          // add custom theme later
+          theme: theme,
+          home:
+              const HomePage(), // This should call the entry point of the app.
+        ));
   }
 }

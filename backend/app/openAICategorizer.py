@@ -32,6 +32,7 @@ def categorize_random_note(note: str):
     tag = response["choices"][0]["text"]
     tag = tag.strip()
 
+    # IF TAG IS IN DATA, CREATE NEW DATA ANYWAY AND APPEND IT ONTO THE EXISTING VALUES IN KEY
     if tag in tags:
         return tag
     
@@ -40,7 +41,6 @@ def categorize_random_note(note: str):
         data.update(update_dict)
         json.dump(data, open("./backend/app/tags.json", "w"))
         return tag
-
 
 
 def categorize_with_cohere(note: str):
@@ -64,6 +64,7 @@ def categorize_with_cohere(note: str):
     with open("./backend/app/data.json", "r") as json_file:
         data = json.load(json_file)
 
+    # IF TAG IS IN DATA, CREATE NEW DATA ANYWAY AND APPEND IT ONTO THE EXISTING VALUES IN KEY
     if tag in data:
         return tag
     
