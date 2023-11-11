@@ -122,137 +122,148 @@ class _NoteFormState extends State<NoteForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Notes',
-          style: TextStyle(color: Colors.yellow),
-        ),
-        iconTheme: IconThemeData(color: Colors.yellow), // Set back arrow color
-        actions: [
-          IconButton(
-            onPressed: () async {
-              var imagePath = await pickImageFromGallery();
-              String text = await FlutterTesseractOcr.extractText(imagePath);
-              _textController.text += text;
-            },
-            icon: const Icon(
-              Icons.document_scanner_outlined,
-              color: Colors.yellow,
+    return WillPopScope(
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text(
+              'Notes',
+              style: TextStyle(color: Colors.yellow),
             ),
-          ),
-          IconButton(
-            onPressed: () {
-              listenToSpeech(context);
-            },
-            icon: const Icon(
-              Icons.mic,
-              color: Colors.yellow,
-            ),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              TextField(
-                controller: _titleController,
-                maxLines: 1,
-                minLines: 1,
-                contextMenuBuilder: (context, editableTextState) {
-                  return AdaptiveTextSelectionToolbar.buttonItems(
-                    anchors: editableTextState.contextMenuAnchors,
-                    buttonItems: <ContextMenuButtonItem>[
-                      ContextMenuButtonItem(
-                        label: 'Text to Speech',
-                        onPressed: () {
-                          _speak(_textController.text);
-                        },
-                      ),
-                      ContextMenuButtonItem(
-                        onPressed: () {
-                          editableTextState
-                              .copySelection(SelectionChangedCause.toolbar);
-                        },
-                        type: ContextMenuButtonType.copy,
-                      ),
-                      ContextMenuButtonItem(
-                        onPressed: () {
-                          editableTextState
-                              .selectAll(SelectionChangedCause.toolbar);
-                        },
-                        type: ContextMenuButtonType.selectAll,
-                      ),
-                    ],
-                  );
+            iconTheme: const IconThemeData(color: Colors.yellow), // Set back arrow color
+            actions: [
+              IconButton(
+                onPressed: () async {
+                  var imagePath = await pickImageFromGallery();
+                  String text = await FlutterTesseractOcr.extractText(imagePath);
+                  _textController.text += text;
                 },
-                decoration: const InputDecoration(
-                  labelText: 'Title',
-                  labelStyle: TextStyle(color: Colors.yellow),
+                icon: const Icon(
+                  Icons.document_scanner_outlined,
+                  color: Colors.yellow,
                 ),
               ),
-              const SizedBox(
-                  height: 8), // Added spacing between title and text fields
-              TextField(
-                controller: _textController,
-                maxLines: 15,
-                minLines: 1,
-                contextMenuBuilder: (context, editableTextState) {
-                  return AdaptiveTextSelectionToolbar.buttonItems(
-                    anchors: editableTextState.contextMenuAnchors,
-                    buttonItems: <ContextMenuButtonItem>[
-                      ContextMenuButtonItem(
-                        label: 'Text to Speech',
-                        onPressed: () {
-                          _speak(_textController.text);
-                        },
-                      ),
-                      ContextMenuButtonItem(
-                        onPressed: () {
-                          editableTextState
-                              .copySelection(SelectionChangedCause.toolbar);
-                        },
-                        type: ContextMenuButtonType.copy,
-                      ),
-                      ContextMenuButtonItem(
-                        onPressed: () {
-                          editableTextState
-                              .selectAll(SelectionChangedCause.toolbar);
-                        },
-                        type: ContextMenuButtonType.selectAll,
-                      ),
-                    ],
-                  );
+              IconButton(
+                onPressed: () {
+                  listenToSpeech(context);
                 },
-                decoration: const InputDecoration(
-                  labelText: 'Text',
-                  labelStyle: TextStyle(color: Colors.yellow),
+                icon: const Icon(
+                  Icons.mic,
+                  color: Colors.yellow,
                 ),
-                keyboardType: TextInputType.multiline,
               ),
-              const SizedBox(height: 16),
             ],
           ),
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  TextField(
+                    controller: _titleController,
+                    maxLines: 1,
+                    minLines: 1,
+                    contextMenuBuilder: (context, editableTextState) {
+                      return AdaptiveTextSelectionToolbar.buttonItems(
+                        anchors: editableTextState.contextMenuAnchors,
+                        buttonItems: <ContextMenuButtonItem>[
+                          ContextMenuButtonItem(
+                            label: 'Text to Speech',
+                            onPressed: () {
+                              _speak(_textController.text);
+                            },
+                          ),
+                          ContextMenuButtonItem(
+                            onPressed: () {
+                              editableTextState
+                                  .copySelection(SelectionChangedCause.toolbar);
+                            },
+                            type: ContextMenuButtonType.copy,
+                          ),
+                          ContextMenuButtonItem(
+                            onPressed: () {
+                              editableTextState
+                                  .selectAll(SelectionChangedCause.toolbar);
+                            },
+                            type: ContextMenuButtonType.selectAll,
+                          ),
+                        ],
+                      );
+                    },
+                    decoration: const InputDecoration(
+                      labelText: 'Title',
+                      labelStyle: TextStyle(color: Colors.yellow),
+                    ),
+                  ),
+                  const SizedBox(
+                      height: 8), // Added spacing between title and text fields
+                  TextField(
+                    controller: _textController,
+                    maxLines: 15,
+                    minLines: 1,
+                    contextMenuBuilder: (context, editableTextState) {
+                      return AdaptiveTextSelectionToolbar.buttonItems(
+                        anchors: editableTextState.contextMenuAnchors,
+                        buttonItems: <ContextMenuButtonItem>[
+                          ContextMenuButtonItem(
+                            label: 'Text to Speech',
+                            onPressed: () {
+                              _speak(_textController.text);
+                            },
+                          ),
+                          ContextMenuButtonItem(
+                            onPressed: () {
+                              editableTextState
+                                  .copySelection(SelectionChangedCause.toolbar);
+                            },
+                            type: ContextMenuButtonType.copy,
+                          ),
+                          ContextMenuButtonItem(
+                            onPressed: () {
+                              editableTextState
+                                  .selectAll(SelectionChangedCause.toolbar);
+                            },
+                            type: ContextMenuButtonType.selectAll,
+                          ),
+                        ],
+                      );
+                    },
+                    decoration: const InputDecoration(
+                      labelText: 'Text',
+                      labelStyle: TextStyle(color: Colors.yellow),
+                    ),
+                    keyboardType: TextInputType.multiline,
+                  ),
+                  const SizedBox(height: 16),
+                ],
+              ),
+            ),
+          ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Navigator.pop(context, {
+                ...widget.noteData ?? {},
+                'title': _titleController.text,
+                'text': _textController.text,
+              });
+            },
+            backgroundColor: Colors.yellow, // Set button color
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10), // Set button border radius
+            ),
+            child: const Icon(Icons.save),
+          ),
         ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
+        onWillPop: () async {
           Navigator.pop(context, {
-            ...widget.noteData ?? {},
+            ...widget.noteData ??
+                {}, // Append the prefilled data from the widget
             'title': _titleController.text,
             'text': _textController.text,
           });
-        },
-        child: const Icon(Icons.save),
-        backgroundColor: Colors.yellow, // Set button color
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10), // Set button border radius
-        ),
-      ),
+          return true;
+        }
     );
   }
 }
