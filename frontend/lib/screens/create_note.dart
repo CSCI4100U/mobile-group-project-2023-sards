@@ -92,7 +92,7 @@ class _NoteFormState extends State<NoteForm> {
                 )
               ],
             ),
-            backgroundColor: const Color.fromRGBO(249, 207, 88, 100)));
+            backgroundColor: const Color(0xFFFFEB3B)));
         speechToText.listen(onResult: onSpeechResult);
       } else {
         speechToText.stop();
@@ -168,12 +168,6 @@ class _NoteFormState extends State<NoteForm> {
                         anchors: editableTextState.contextMenuAnchors,
                         buttonItems: <ContextMenuButtonItem>[
                           ContextMenuButtonItem(
-                            label: 'Text to Speech',
-                            onPressed: () {
-                              _speak(_textController.text);
-                            },
-                          ),
-                          ContextMenuButtonItem(
                             onPressed: () {
                               editableTextState
                                   .copySelection(SelectionChangedCause.toolbar);
@@ -181,11 +175,24 @@ class _NoteFormState extends State<NoteForm> {
                             type: ContextMenuButtonType.copy,
                           ),
                           ContextMenuButtonItem(
+                              onPressed: () {
+                                editableTextState
+                                    .pasteText(SelectionChangedCause.toolbar);
+                              },
+                              type: ContextMenuButtonType.paste
+                          ),
+                          ContextMenuButtonItem(
                             onPressed: () {
                               editableTextState
                                   .selectAll(SelectionChangedCause.toolbar);
                             },
                             type: ContextMenuButtonType.selectAll,
+                          ),
+                          ContextMenuButtonItem(
+                            label: 'Text to Speech',
+                            onPressed: () {
+                              _speak(_textController.text);
+                            },
                           ),
                         ],
                       );
@@ -206,12 +213,6 @@ class _NoteFormState extends State<NoteForm> {
                         anchors: editableTextState.contextMenuAnchors,
                         buttonItems: <ContextMenuButtonItem>[
                           ContextMenuButtonItem(
-                            label: 'Text to Speech',
-                            onPressed: () {
-                              _speak(_textController.text);
-                            },
-                          ),
-                          ContextMenuButtonItem(
                             onPressed: () {
                               editableTextState
                                   .copySelection(SelectionChangedCause.toolbar);
@@ -219,11 +220,24 @@ class _NoteFormState extends State<NoteForm> {
                             type: ContextMenuButtonType.copy,
                           ),
                           ContextMenuButtonItem(
+                              onPressed: () {
+                                editableTextState
+                                    .pasteText(SelectionChangedCause.toolbar);
+                              },
+                              type: ContextMenuButtonType.paste
+                          ),
+                          ContextMenuButtonItem(
                             onPressed: () {
                               editableTextState
                                   .selectAll(SelectionChangedCause.toolbar);
                             },
                             type: ContextMenuButtonType.selectAll,
+                          ),
+                          ContextMenuButtonItem(
+                            label: 'Text to Speech',
+                            onPressed: () {
+                              _speak(_textController.text);
+                            },
                           ),
                         ],
                       );
