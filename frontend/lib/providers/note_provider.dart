@@ -44,6 +44,7 @@ class NotesProvider extends ChangeNotifier {
       ...dataMap,
       'date': DateTime.now().toString(),
       'id': uuid.v4(),
+      'tagId': null,
 
       // 'color': dataMap['color'],
       // 'isImportant': dataMap['isImportant'],

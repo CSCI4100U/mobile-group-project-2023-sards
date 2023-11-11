@@ -103,8 +103,9 @@ class _SettingsPageState extends State<SettingsPage> {
             padding: const EdgeInsetsDirectional.fromSTEB(0, 24, 0, 0),
             child: ElevatedButton(
               onPressed: () {
-                Sync.importFromCloud();
-                // TODO: Add snackbar showing that data was added
+                Sync.importFromCloud(context).then((val){
+
+                });
               },
               style: ElevatedButton.styleFrom(
                 // Add theme color and font later
