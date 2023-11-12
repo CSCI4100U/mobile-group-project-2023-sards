@@ -117,7 +117,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
               }
             },
           ),
-          signedInWidgets(context, _user)
+          signedInWidgets(context, _user),
+          ListTile(
+            title: const Text('Categorize Notes with AI'),
+            onTap: () async{
+              const url = "";
+
+            },
+          )
         ],
       ),
     );
