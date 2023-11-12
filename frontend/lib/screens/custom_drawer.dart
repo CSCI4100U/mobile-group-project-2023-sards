@@ -117,6 +117,15 @@ class _CustomDrawerState extends State<CustomDrawer> {
               }
             },
           ),
+          ElevatedButton(
+              style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.yellow,
+          ),
+          onPressed: (){}, //TODO Add flask/AI function
+              child: const Text('Categorize Notes',
+                style: TextStyle(color: Colors.black),
+              ),
+          ),
           signedInWidgets(context, _user)
         ],
       ),
