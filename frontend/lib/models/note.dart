@@ -10,7 +10,7 @@ class Note {
   String text; // Change this to raw bytes
   String id;
   String date;
-  String? tag;
+  String tag;
   // final DocumentReference reference;
 
   Note(
@@ -18,7 +18,7 @@ class Note {
       required this.text,
       required this.id,
       required this.date,
-      this.tag});
+      required this.tag});
 
   Map<String, dynamic> toMap() {
     return {'id': id, 'title': title, 'text': text, 'date': date, 'tag': tag};
