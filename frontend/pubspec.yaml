@@ -50,6 +50,7 @@ dependencies:
   jumping_dot: ^0.0.6
   flutter_tts: ^3.8.3
   shared_preferences: ^2.2.2
+  http: ^1.1.0
 
 dev_dependencies:
   flutter_test:
