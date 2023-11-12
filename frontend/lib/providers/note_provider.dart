@@ -13,17 +13,15 @@ import 'package:uuid/uuid.dart';
 const url = "https://127.0.0.1:8080/api/categorize_note"; // URL of the server
 Future<String> classifyNote(String body) async {
   print("Classifying note: $body");
-  Response? response;
-  try {
-    response = await post(Uri.parse(url),
+  Response response = await post(Uri.parse(url),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: body);
-    if (response.statusCode == 201) {
-      return response.body;
-    }
-  } finally{}
+        body: body).catchError((e)=>Response('Error: $e', 400));
+  if (response.statusCode == 201) {
+    return response.body;
+  }
+  debugPrint(response.body);
   return '';
 }
 
