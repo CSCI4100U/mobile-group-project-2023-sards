@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:kanjou/screens/settings_page.dart';
 import 'package:kanjou/screens/sign_in.dart';
 import 'package:kanjou/services/auth.dart';
+import 'package:kanjou/services/classify.dart';
 
 class CustomDrawer extends StatefulWidget {
   const CustomDrawer({Key? key}) : super(key: key);
@@ -117,14 +118,19 @@ class _CustomDrawerState extends State<CustomDrawer> {
               }
             },
           ),
-          signedInWidgets(context, _user),
-          ListTile(
-            title: const Text('Categorize Notes with AI'),
-            onTap: () async{
-              const url = "";
-
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.yellow,
+            ),
+            onPressed: () {
+              NotesClassifier.classifyNotes(context);
             },
-          )
+            child: const Text(
+              'Categorize Notes',
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
+          signedInWidgets(context, _user)
         ],
       ),
     );
