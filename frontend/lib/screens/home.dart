@@ -104,6 +104,17 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Text(
+                        note.tag != ""
+                            ? note.tag
+                            : "No tag",
+                        maxLines: 1,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                    ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 4.0),
                       child: Text(

@@ -121,20 +121,15 @@ class _NoteFormState extends State<NoteForm> {
       });
     }
   }
-  
-  Future<String> getCategory (String title, String text) async {
 
+  Future<String> getCategory(String title, String text) async {
     var endpoint = "https://127.0.0.1:8080/api/categorize_note";
 
-    Map<String, dynamic> jsonData = {
-      'note': "$title: $text"
-    };
+    Map<String, dynamic> jsonData = {'note': "$title: $text"};
     var jsonBody = await json.encode(jsonData);
 
     var response = await http.post(Uri.parse(endpoint),
-      headers: {"Content-Type": "application/json"},
-      body: jsonBody
-    );
+        headers: {"Content-Type": "application/json"}, body: jsonBody);
 
     if (response.statusCode == 200) {
       var categoryJson = jsonDecode(response.body);
@@ -143,7 +138,7 @@ class _NoteFormState extends State<NoteForm> {
     print("response is error!");
     return "Error: ${response.statusCode}";
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -285,8 +280,10 @@ class _NoteFormState extends State<NoteForm> {
                 'title': _titleController.text,
                 'text': _textController.text,
               });
-              var category = await getCategory(_titleController.text, _textController.text);
-              print(category); // do categorization with this. It returns data in the format: "Classifying note: test"
+              var category = await getCategory(
+                  _titleController.text, _textController.text);
+              print(
+                  category); // do categorization with this. It returns data in the format: "Classifying note: test"
             },
             backgroundColor: Colors.yellow, // Set button color
             shape: RoundedRectangleBorder(
