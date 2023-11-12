@@ -3,8 +3,8 @@ import cohere, openai
 from utils.inputs import input
 from cohere.responses.classify import Example
 
-co = cohere.Client("habRbsqqOQyn8RpT7lMEFfOxaGjFts6mx9gKVvLQ")
-openai.api_key = "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"
+co = cohere.Client("<COHERE API KEY>")
+openai.api_key = "<OPENAI API KEY"
 
 def train_and_execute_model(input):
     inputs = [input]
