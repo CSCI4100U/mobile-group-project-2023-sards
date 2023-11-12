@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:kanjou/screens/create_note.dart';
-import 'package:kanjou/screens/custom_drawer.dart';
+import 'package:kanjou/widgets/custom_drawer.dart';
 import 'package:kanjou/screens/settings_page.dart';
 import 'package:kanjou/screens/sign_in.dart';
 import 'package:kanjou/providers/settings_provider.dart';
