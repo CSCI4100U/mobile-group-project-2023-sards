@@ -13,35 +13,8 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
 
-var url = "https://notesaimobile.azurewebsites.net/api/categorize_note"; // URL of the server
-Future<String> classifyNote(String body) async {
-  Map<String, dynamic> jsonData = {
-    'note': '$body'
-  };
-
-  var jsonBody = json.encode(jsonData);
-  try{
-    var response = await http.post(Uri.parse(url),
-      headers: {"Content-Type": "application/json"}, 
-      body: jsonBody
-      );
-
-      if(response.statusCode == 200) {
-        var categoryJson = jsonDecode(response.body);
-        return categoryJson["category"].toString();
-
-      }
-      else{
-        print("here");
-        print(response.statusCode.toString());
-        return response.statusCode.toString();
-      }
-  } catch(e) {
-    print("or here");
-    return e.toString();
-  }
- 
-}
+var url =
+    "https://notesaimobile.azurewebsites.net/api/categorize_note"; // URL of the server
 
 class NotesProvider extends ChangeNotifier {
   final localDb = DatabaseHelper();
@@ -62,26 +35,26 @@ class NotesProvider extends ChangeNotifier {
     connectionStatus.connectionChange.listen(connectionChanged);
   }
 
-  Future<String> classifyNote(String title, String text) async {
-    if (!hasConnection) {
-      return "";
-    }
+  Future<String> classifyNote(String body) async {
+    Map<String, dynamic> jsonData = {'note': '$body'};
 
-    Map<String, dynamic> jsonData = {'note': "$title: $text"};
     var jsonBody = json.encode(jsonData);
     try {
-      Response response = await post(Uri.parse(endpoint),
+      var response = await http.post(Uri.parse(url),
           headers: {"Content-Type": "application/json"}, body: jsonBody);
-      print("Response: ${response.body}");
+
       if (response.statusCode == 200) {
         var categoryJson = jsonDecode(response.body);
-        print("Response: $categoryJson[\"category\"].toString()");
         return categoryJson["category"].toString();
+      } else {
+        print("here");
+        print(response.statusCode.toString());
+        return response.statusCode.toString();
       }
     } catch (e) {
-      print("Error: $e");
+      print("or here");
+      return e.toString();
     }
-    return "";
   }
 
   void connectionChanged(dynamic hasConnection) {
@@ -91,7 +64,8 @@ class NotesProvider extends ChangeNotifier {
       notes.forEach((note) async {
         print('hasConnection: ${note.tag}');
         if (note.tag == '') {
-          note.tag = await classifyNote(note.title,
+          note.tag = await classifyNote(note.title +
+              ":" +
               note.text); // This is a blocking call, so we need to make it async
           await localDb.updateNote(
               note); // This is a blocking call, so we need to make it async
@@ -118,7 +92,7 @@ class NotesProvider extends ChangeNotifier {
       ...dataMap,
       'date': DateTime.now().toString(),
       'id': uuid.v4(),
-      'tag': await classifyNote(dataMap['title'], dataMap['text']),
+      'tag': await classifyNote(dataMap['title'] + ":" + dataMap['text']),
 
       // 'color': dataMap['color'],
       // 'isImportant': dataMap['isImportant'],
