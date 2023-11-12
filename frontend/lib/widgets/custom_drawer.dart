@@ -14,6 +14,7 @@ class CustomDrawer extends StatefulWidget {
 
 class _CustomDrawerState extends State<CustomDrawer> {
   User? _user;
+  bool _isCategorizerLoading = false;
 
   @override
   void initState() {
@@ -122,13 +123,27 @@ class _CustomDrawerState extends State<CustomDrawer> {
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.yellow,
             ),
-            onPressed: () {
-              NotesClassifier.classifyNotes(context);
+            onPressed: (){
+              setState(() {
+                _isCategorizerLoading = true;
+              });
+              NotesClassifier.classifyNotes(context).then((isSuccess){
+                setState(() {
+                  _isCategorizerLoading = false;
+                });
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: isSuccess
+                        ? const Text('Notes have been categorized')
+                        : const Text('Could not connect to server')));
+              });
+
             },
-            child: const Text(
-              'Categorize Notes',
-              style: TextStyle(color: Colors.black),
-            ),
+            child: _isCategorizerLoading
+                ? const CircularProgressIndicator()
+                : const Text(
+                    'Categorize Notes',
+                    style: TextStyle(color: Colors.black),
+                  ),
           ),
           signedInWidgets(context, _user)
         ],
