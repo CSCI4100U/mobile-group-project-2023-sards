@@ -10,19 +10,20 @@ import 'package:kanjou/services/firestore_helper.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:uuid/uuid.dart';
 
-const url = 'https://google.com'; // URL of the server
+const url = "https://127.0.0.1:8080/api/categorize_note"; // URL of the server
 Future<String> classifyNote(String body) async {
   print("Classifying note: $body");
-  Response response;
-  response = await post(Uri.parse(url),
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-          },
-          body: body)
-      .catchError((e) => e);
-  if (response.statusCode == 201) {
-    return response.body;
-  }
+  Response? response;
+  try {
+    response = await post(Uri.parse(url),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: body);
+    if (response.statusCode == 201) {
+      return response.body;
+    }
+  } finally{}
   return '';
 }
 
