@@ -11,9 +11,37 @@ import 'package:kanjou/services/database_helper.dart';
 import 'package:kanjou/services/firestore_helper.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:uuid/uuid.dart';
+import 'package:http/http.dart' as http;
 
-// This is the endpoint for the categorization service
-const endpoint = "http://192.168.2.16:8080/api/categorize_note";
+var url = "https://notesaimobile.azurewebsites.net/api/categorize_note"; // URL of the server
+Future<String> classifyNote(String body) async {
+  Map<String, dynamic> jsonData = {
+    'note': '$body'
+  };
+
+  var jsonBody = json.encode(jsonData);
+  try{
+    var response = await http.post(Uri.parse(url),
+      headers: {"Content-Type": "application/json"}, 
+      body: jsonBody
+      );
+
+      if(response.statusCode == 200) {
+        var categoryJson = jsonDecode(response.body);
+        return categoryJson["category"].toString();
+
+      }
+      else{
+        print("here");
+        print(response.statusCode.toString());
+        return response.statusCode.toString();
+      }
+  } catch(e) {
+    print("or here");
+    return e.toString();
+  }
+ 
+}
 
 class NotesProvider extends ChangeNotifier {
   final localDb = DatabaseHelper();
