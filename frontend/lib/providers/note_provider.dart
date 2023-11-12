@@ -13,7 +13,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:uuid/uuid.dart';
 
 // This is the endpoint for the categorization service
-const endpoint = "http://192.168.2.16:8080/categorize_note";
+const endpoint = "http://192.168.2.16:8080/api/categorize_note";
 
 class NotesProvider extends ChangeNotifier {
   final localDb = DatabaseHelper();
