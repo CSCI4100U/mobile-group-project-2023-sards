@@ -9,14 +9,14 @@ class DatabaseHelper {
     String path = await getDatabasesPath();
     String dbPath = join(path, 'notes.db');
 
-    db = await openDatabase(dbPath, version: 1, onCreate: (db, version) async {
+    db = await openDatabase(dbPath, version: 2, onCreate: (db, version) async {
       await db.execute('''
           CREATE TABLE notes(
             id TEXT PRIMARY KEY NOT NULL,
             title TEXT NOT NULL,
             text TEXT NOT NULL,
             date TEXT NOT NULL,
-            tag TEXT
+            tag TEXT NOT NULL
           )
         ''');
     });
