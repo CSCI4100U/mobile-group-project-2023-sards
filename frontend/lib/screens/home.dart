@@ -58,6 +58,7 @@ class _HomePageState extends State<HomePage> {
   Widget _buildSearchField() {
     return TextField(
       decoration: const InputDecoration(
+        hintStyle: TextStyle(color: Colors.yellow),
         hintText: "Search...",
       ),
       onSubmitted: (value) {
@@ -207,51 +208,56 @@ class _HomePageState extends State<HomePage> {
         )),
         title: _searchBoolean ? _buildSearchField() : null,
         actions: <Widget>[
-          makeBigger(IconButton(
-            onPressed: () {
-              setState(() {
-                _searchBoolean = !_searchBoolean;
-              });
-            },
-            icon: Icon(_searchBoolean ? Icons.clear : Icons.search,
-                color: Colors.yellow),
-            tooltip: 'Search for a note',
-          )),
-          const SizedBox(width: 12),
-          makeBigger(IconButton(
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const SettingsPage()));
-            },
-            icon: const Icon(Icons.settings),
-            color: Colors.yellow,
-            tooltip: 'Settings',
-          )),
-          // Transform.scale(
-          //   scale: 1.5,
-          //   child: IconButton(
-          //     onPressed: () {},
-          //     icon: const Icon(Icons.more_vert),
-          //   ),
-          // )
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 1.0),
+            child: makeBigger(IconButton(
+              onPressed: () {
+                setState(() {
+                  _searchBoolean = !_searchBoolean;
+                });
+              },
+              icon: Icon(_searchBoolean ? Icons.clear : Icons.search,
+                  color: Colors.yellow),
+              tooltip: 'Search for a note',
+            )),
+          ),
+          const SizedBox(width: 2),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0), // Add padding here
+            child: makeBigger(IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const SettingsPage()));
+              },
+              icon: const Icon(Icons.settings),
+              color: Colors.yellow,
+              tooltip: 'Settings',
+            )),
+          ),
         ],
       ),
-      body: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Expanded(child: _buildListOfNotes(providerNotes)),
-        ],
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Expanded(child: _buildListOfNotes(providerNotes)),
+          ],
+        ),
       ),
-      floatingActionButton: Transform.scale(
-        scale: 1.2, // Increase the size
-        child: FloatingActionButton(
-          tooltip: 'Add a Note',
-          onPressed: addNote,
-          child: const Icon(Icons.edit_note_sharp,
-              color: Color.fromARGB(255, 0, 0, 0)),
-          backgroundColor: Colors.yellow,
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Transform.scale(
+          scale: 1.2, // Increase the size
+          child: FloatingActionButton(
+            tooltip: 'Add a Note',
+            onPressed: addNote,
+            child: const Icon(Icons.edit_note_sharp,
+                color: Color.fromARGB(255, 0, 0, 0)),
+            backgroundColor: Colors.yellow,
+          ),
         ),
       ),
       drawer: const CustomDrawer(),
