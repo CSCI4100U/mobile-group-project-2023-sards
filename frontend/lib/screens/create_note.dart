@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter_tesseract_ocr/flutter_tesseract_ocr.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jumping_dot/jumping_dot.dart';
@@ -121,7 +120,7 @@ class _NoteFormState extends State<NoteForm> {
       });
     }
   }
-  
+
   // Future<String> getCategory (String title, String text) async {
   //
   //
@@ -144,7 +143,7 @@ class _NoteFormState extends State<NoteForm> {
   //   print("response is error!");
   //   return "Error: ${response.statusCode}";
   // }
-  
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -296,13 +295,32 @@ class _NoteFormState extends State<NoteForm> {
           ),
         ),
         onWillPop: () async {
-          Navigator.pop(context, {
-            ...widget.noteData ??
-                {}, // Append the prefilled data from the widget
-            'title': _titleController.text,
-            'text': _textController.text,
-          });
-          return true;
+          bool willLeave = false;
+          await showDialog(
+              context: context,
+              builder: (_) => AlertDialog(
+                    title: const Text('Leave without saving changes?'),
+                    actions: [
+                      ElevatedButton(
+                          onPressed: () {
+                            willLeave = true;
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text('Yes')),
+                      TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text('No'))
+                    ],
+                  ));
+          return willLeave;
+
+          // Navigator.pop(context, {
+          //   ...widget.noteData ??
+          //       {}, // Append the prefilled data from the widget
+          //   'title': _titleController.text,
+          //   'text': _textController.text,
+          // });
+          // return true;
         });
   }
 }
