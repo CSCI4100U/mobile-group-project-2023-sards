@@ -176,6 +176,7 @@ class _HomePageState extends State<HomePage> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Note successfully saved'),
+                backgroundColor: Colors.yellow
             ),
           );
           if (providerSettings.sync) {
@@ -186,6 +187,7 @@ class _HomePageState extends State<HomePage> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('The note was not saved'),
+              backgroundColor: Colors.yellow,
             ),
           );
         }
@@ -200,6 +202,7 @@ class _HomePageState extends State<HomePage> {
           onPressed: () {
             scaffoldKey.currentState!.openDrawer();
           },
+          color: Colors.yellow,
           tooltip: 'User Information',
         )),
         title: _searchBoolean ? _buildSearchField() : null,
@@ -223,6 +226,7 @@ class _HomePageState extends State<HomePage> {
                       builder: (context) => const SettingsPage()));
             },
             icon: const Icon(Icons.settings),
+            color: Colors.yellow,
             tooltip: 'Settings',
           )),
           // Transform.scale(
@@ -247,6 +251,7 @@ class _HomePageState extends State<HomePage> {
           onPressed: addNote,
           child: const Icon(Icons.edit_note_sharp,
               color: Color.fromARGB(255, 0, 0, 0)),
+          backgroundColor: Colors.yellow,
         ),
       ),
       drawer: const CustomDrawer(),
