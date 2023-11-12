@@ -41,17 +41,18 @@ class NotesProvider extends ChangeNotifier {
 
     Map<String, dynamic> jsonData = {'note': "$title: $text"};
     var jsonBody = json.encode(jsonData);
-
-    var response = await post(Uri.parse(endpoint),
-        headers: {"Content-Type": "application/json"}, body: jsonBody);
-
-    print("Response: ${response.body}");
-    if (response.statusCode == 200) {
-      var categoryJson = jsonDecode(response.body);
-      print("Response: $categoryJson[\"category\"].toString()");
-      return categoryJson["category"].toString();
+    try {
+      Response response = await post(Uri.parse(endpoint),
+          headers: {"Content-Type": "application/json"}, body: jsonBody);
+      print("Response: ${response.body}");
+      if (response.statusCode == 200) {
+        var categoryJson = jsonDecode(response.body);
+        print("Response: $categoryJson[\"category\"].toString()");
+        return categoryJson["category"].toString();
+      }
+    } catch (e) {
+      print("Error: $e");
     }
-    print("response is error!");
     return "";
   }
 
