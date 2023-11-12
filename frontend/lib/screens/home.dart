@@ -167,7 +167,7 @@ class _HomePageState extends State<HomePage> {
               content: Text('Note successfully saved'),
             ),
           );
-          if(providerSettings.sync){
+          if (providerSettings.sync) {
             Sync.uploadToCloud(context);
           }
         } else {
@@ -180,12 +180,17 @@ class _HomePageState extends State<HomePage> {
         }
       });
     }
+
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
-        leading: makeBigger(IconButton(icon: const Icon(Icons.menu),
-          onPressed: (){scaffoldKey.currentState!.openDrawer();},
-          tooltip: 'User Information',)),
+        leading: makeBigger(IconButton(
+          icon: const Icon(Icons.menu, color: Colors.yellow),
+          onPressed: () {
+            scaffoldKey.currentState!.openDrawer();
+          },
+          tooltip: 'User Information',
+        )),
         title: _searchBoolean ? _buildSearchField() : null,
         actions: <Widget>[
           makeBigger(IconButton(
@@ -194,17 +199,19 @@ class _HomePageState extends State<HomePage> {
                 _searchBoolean = !_searchBoolean;
               });
             },
-            icon: Icon(_searchBoolean ? Icons.clear : Icons.search),
+            icon: Icon(_searchBoolean ? Icons.clear : Icons.search,
+                color: Colors.yellow),
             tooltip: 'Search for a note',
           )),
           const SizedBox(width: 12),
           makeBigger(IconButton(
             onPressed: () {
               Navigator.push(
-                context,
-                  MaterialPageRoute(builder: (context) => const SettingsPage()));
-              },
-            icon: const Icon(Icons.settings),
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const SettingsPage()));
+            },
+            icon: const Icon(Icons.settings, color: Colors.yellow),
             tooltip: 'Settings',
           )),
           // Transform.scale(
@@ -227,7 +234,8 @@ class _HomePageState extends State<HomePage> {
         child: FloatingActionButton(
           tooltip: 'Add a Note',
           onPressed: addNote,
-          child: const Icon(Icons.edit_note_sharp),
+          child: const Icon(Icons.edit_note_sharp,
+              color: Color.fromARGB(255, 0, 0, 0)),
         ),
       ),
       drawer: const CustomDrawer(),

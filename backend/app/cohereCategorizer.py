@@ -4,7 +4,7 @@ from inputs import input
 from cohere.classify import Example
 from openAICategorizer import categorize_with_cohere
 
-co = cohere.Client("<ENTER COHERE API KEY HERE>")
+co = cohere.Client('habRbsqqOQyn8RpT7lMEFfOxaGjFts6mx9gKVvLQ')
 
 
 def train_and_execute_model(input):
@@ -26,6 +26,8 @@ def train_and_execute_model(input):
         examples = examples
     )
 
-    if response.classifications[0].confidence <= 0.85:
+    if response.classifications[0].confidence <= 0.75:
         return categorize_with_cohere(input)
     return response.classifications[0].prediction, response.classifications[0].confidence
+
+print(train_and_execute_model(input))

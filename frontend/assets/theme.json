@@ -4,7 +4,7 @@
   "buttonTheme": {
     "alignedDropdown": false,
     "colorScheme": {
-      "background": "#000000",
+      "background": "#0B0B0B",
       "brightness": "dark",
       "error": "#ffffb4ab",
       "errorContainer": "#ff93000a",
@@ -28,8 +28,8 @@
       "primaryContainer": "#fffff497",
       "secondary": "#ffccc8a3",
       "secondaryContainer": "#ff4a482c",
-      "shadow": "#ff000000",
-      "surface": "#000000",
+      "shadow": "#ff0B0B0B",
+      "surface": "#0B0B0B",
       "surfaceTint": "#ffd2ca53",
       "surfaceVariant": "#ff49473a",
       "tertiary": "#ffa5d0ba",
@@ -69,7 +69,7 @@
         "type": "only"
       },
       "side": {
-        "color": "#ff000000",
+        "color": "#ff0B0B0B",
         "strokeAlign": -1,
         "style": "none",
         "width": 0
@@ -78,10 +78,10 @@
     },
     "textTheme": "normal"
   },
-  "canvasColor": "#000000",
-  "cardColor": "#000000",
+  "canvasColor": "#0B0B0B",
+  "cardColor": "#0B0B0B",
   "colorScheme": {
-    "background": "#000000",
+    "background": "#0B0B0B",
     "brightness": "dark",
     "error": "#ffffb4ab",
     "errorContainer": "#ff93000a",
@@ -105,14 +105,14 @@
     "primaryContainer": "#fffff497",
     "secondary": "#ffccc8a3",
     "secondaryContainer": "#ff4a482c",
-    "shadow": "#ff000000",
-    "surface": "#000000",
+    "shadow": "#ff0B0B0B",
+    "surface": "#0B0B0B",
     "surfaceTint": "#ffd2ca53",
     "surfaceVariant": "#ff49473a",
     "tertiary": "#ffa5d0ba",
     "tertiaryContainer": "#ff274e3d"
   },
-  "dialogBackgroundColor": "#000000",
+  "dialogBackgroundColor": "#0B0B0B",
   "disabledColor": "#62ffffff",
   "dividerColor": "#1fe6e2d9",
   "focusColor": "#1fffffff",
@@ -133,8 +133,8 @@
   },
   "materialTapTargetSize": "shrinkWrap",
   "platform": "linux",
-  "primaryColor": "#000000",
-  "primaryColorDark": "#ff000000",
+  "primaryColor": "#0B0B0B",
+  "primaryColorDark": "#ff0B0B0B",
   "primaryColorLight": "#ff9e9e9e",
   "primaryIconTheme": {
     "color": "#ffffffff"
@@ -396,9 +396,9 @@
       "textBaseline": "alphabetic"
     }
   },
-  "scaffoldBackgroundColor": "#000000",
+  "scaffoldBackgroundColor": "#0B0B0B",
   "secondaryHeaderColor": "#ff616161",
-  "shadowColor": "#ff000000",
+  "shadowColor": "#ff0B0B0B",
   "splashColor": "#40cccccc",
   "splashFactory": "splash",
   "textTheme": {
@@ -661,7 +661,7 @@
   "typography": {
     "black": {
       "bodyLarge": {
-        "color": "#dd000000",
+        "color": "#dd0B0B0B",
         "decoration": "none",
         "fontFamily": "Roboto",
         "fontFamilyFallback": [
@@ -674,7 +674,7 @@
         "inherit": true
       },
       "bodyMedium": {
-        "color": "#dd000000",
+        "color": "#dd0B0B0B",
         "decoration": "none",
         "fontFamily": "Roboto",
         "fontFamilyFallback": [
@@ -687,7 +687,7 @@
         "inherit": true
       },
       "bodySmall": {
-        "color": "#8a000000",
+        "color": "#8a0B0B0B",
         "decoration": "none",
         "fontFamily": "Roboto",
         "fontFamilyFallback": [
@@ -700,7 +700,7 @@
         "inherit": true
       },
       "displayLarge": {
-        "color": "#8a000000",
+        "color": "#8a0B0B0B",
         "decoration": "none",
         "fontFamily": "Roboto",
         "fontFamilyFallback": [
@@ -713,7 +713,7 @@
         "inherit": true
       },
       "displayMedium": {
-        "color": "#8a000000",
+        "color": "#8a0B0B0B",
         "decoration": "none",
         "fontFamily": "Roboto",
         "fontFamilyFallback": [
@@ -726,7 +726,7 @@
         "inherit": true
       },
       "displaySmall": {
-        "color": "#8a000000",
+        "color": "#8a0B0B0B",
         "decoration": "none",
         "fontFamily": "Roboto",
         "fontFamilyFallback": [
@@ -739,7 +739,7 @@
         "inherit": true
       },
       "headlineLarge": {
-        "color": "#8a000000",
+        "color": "#8a0B0B0B",
         "decoration": "none",
         "fontFamily": "Roboto",
         "fontFamilyFallback": [
@@ -752,7 +752,7 @@
         "inherit": true
       },
       "headlineMedium": {
-        "color": "#8a000000",
+        "color": "#8a0B0B0B",
         "decoration": "none",
         "fontFamily": "Roboto",
         "fontFamilyFallback": [
@@ -765,7 +765,7 @@
         "inherit": true
       },
       "headlineSmall": {
-        "color": "#dd000000",
+        "color": "#dd0B0B0B",
         "decoration": "none",
         "fontFamily": "Roboto",
         "fontFamilyFallback": [
@@ -778,7 +778,7 @@
         "inherit": true
       },
       "labelLarge": {
-        "color": "#dd000000",
+        "color": "#dd0B0B0B",
         "decoration": "none",
         "fontFamily": "Roboto",
         "fontFamilyFallback": [
@@ -791,7 +791,7 @@
         "inherit": true
       },
       "labelMedium": {
-        "color": "#ff000000",
+        "color": "#ff0B0B0B",
         "decoration": "none",
         "fontFamily": "Roboto",
         "fontFamilyFallback": [
@@ -804,7 +804,7 @@
         "inherit": true
       },
       "labelSmall": {
-        "color": "#ff000000",
+        "color": "#ff0B0B0B",
         "decoration": "none",
         "fontFamily": "Roboto",
         "fontFamilyFallback": [
@@ -817,7 +817,7 @@
         "inherit": true
       },
       "titleLarge": {
-        "color": "#dd000000",
+        "color": "#dd0B0B0B",
         "decoration": "none",
         "fontFamily": "Roboto",
         "fontFamilyFallback": [
@@ -830,7 +830,7 @@
         "inherit": true
       },
       "titleMedium": {
-        "color": "#dd000000",
+        "color": "#dd0B0B0B",
         "decoration": "none",
         "fontFamily": "Roboto",
         "fontFamilyFallback": [
@@ -843,7 +843,7 @@
         "inherit": true
       },
       "titleSmall": {
-        "color": "#ff000000",
+        "color": "#ff0B0B0B",
         "decoration": "none",
         "fontFamily": "Roboto",
         "fontFamilyFallback": [

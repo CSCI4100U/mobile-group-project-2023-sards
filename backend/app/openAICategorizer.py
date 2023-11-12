@@ -1,7 +1,7 @@
 import openai
 import json
 
-openai.api_key = "<ENTER OPENAI KEY HERE>"
+openai.api_key = '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'
 
 
 def categorize_random_note(note: str):
