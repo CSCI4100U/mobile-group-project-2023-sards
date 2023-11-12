@@ -286,8 +286,6 @@ class _NoteFormState extends State<NoteForm> {
                 'title': _titleController.text,
                 'text': _textController.text,
               });
-              // var category = await getCategory(_titleController.text, _textController.text);
-              // print(category); // do categorization with this. It returns data in the format: "Classifying note: test"
             },
             backgroundColor: Colors.yellow, // Set button color
             shape: RoundedRectangleBorder(

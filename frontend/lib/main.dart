@@ -4,6 +4,7 @@ import 'package:kanjou/providers/note_provider.dart';
 import 'package:kanjou/providers/settings_provider.dart';
 
 import 'package:json_theme/json_theme.dart';
+import 'package:kanjou/services/connectivity.dart';
 
 import 'package:provider/provider.dart';
 
@@ -24,6 +25,9 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  ConnectionStatusSingleton connectionStatus = ConnectionStatusSingleton.getInstance();
+  connectionStatus.initialize();
 
   runApp(MyApp(theme: theme));
 }
