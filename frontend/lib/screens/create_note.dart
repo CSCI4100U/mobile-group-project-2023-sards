@@ -47,7 +47,7 @@ class _NoteFormState extends State<NoteForm> {
       if (image == null) return;
       return image.path;
     } on PlatformException catch (e) {
-      print('Failed to pick image: $e');
+      debugPrint('Failed to pick image: $e');
     }
   }
 
@@ -129,12 +129,14 @@ class _NoteFormState extends State<NoteForm> {
               'Notes',
               style: TextStyle(color: Colors.yellow),
             ),
-            iconTheme: const IconThemeData(color: Colors.yellow), // Set back arrow color
+            iconTheme: const IconThemeData(
+                color: Colors.yellow), // Set back arrow color
             actions: [
               IconButton(
                 onPressed: () async {
                   var imagePath = await pickImageFromGallery();
-                  String text = await FlutterTesseractOcr.extractText(imagePath);
+                  String text =
+                      await FlutterTesseractOcr.extractText(imagePath);
                   _textController.text += text;
                 },
                 icon: const Icon(
@@ -179,8 +181,7 @@ class _NoteFormState extends State<NoteForm> {
                                 editableTextState
                                     .pasteText(SelectionChangedCause.toolbar);
                               },
-                              type: ContextMenuButtonType.paste
-                          ),
+                              type: ContextMenuButtonType.paste),
                           ContextMenuButtonItem(
                             onPressed: () {
                               editableTextState
@@ -224,8 +225,7 @@ class _NoteFormState extends State<NoteForm> {
                                 editableTextState
                                     .pasteText(SelectionChangedCause.toolbar);
                               },
-                              type: ContextMenuButtonType.paste
-                          ),
+                              type: ContextMenuButtonType.paste),
                           ContextMenuButtonItem(
                             onPressed: () {
                               editableTextState
@@ -264,7 +264,8 @@ class _NoteFormState extends State<NoteForm> {
             },
             backgroundColor: Colors.yellow, // Set button color
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10), // Set button border radius
+              borderRadius:
+                  BorderRadius.circular(10), // Set button border radius
             ),
             child: const Icon(Icons.save),
           ),
@@ -277,7 +278,6 @@ class _NoteFormState extends State<NoteForm> {
             'text': _textController.text,
           });
           return true;
-        }
-    );
+        });
   }
 }

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:kanjou/screens/settings_page.dart';
 import 'package:kanjou/screens/sign_in.dart';
 import 'package:kanjou/services/auth.dart';
-import 'package:kanjou/services/classify.dart';
 
 class CustomDrawer extends StatefulWidget {
   const CustomDrawer({Key? key}) : super(key: key);
@@ -14,7 +13,6 @@ class CustomDrawer extends StatefulWidget {
 
 class _CustomDrawerState extends State<CustomDrawer> {
   User? _user;
-  bool _isCategorizerLoading = false;
 
   @override
   void initState() {
@@ -118,32 +116,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 );
               }
             },
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.yellow,
-            ),
-            onPressed: (){
-              setState(() {
-                _isCategorizerLoading = true;
-              });
-              NotesClassifier.classifyNotes(context).then((isSuccess){
-                setState(() {
-                  _isCategorizerLoading = false;
-                });
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: isSuccess
-                        ? const Text('Notes have been categorized')
-                        : const Text('Could not connect to server')));
-              });
-
-            },
-            child: _isCategorizerLoading
-                ? const CircularProgressIndicator()
-                : const Text(
-                    'Categorize Notes',
-                    style: TextStyle(color: Colors.black),
-                  ),
           ),
           signedInWidgets(context, _user)
         ],

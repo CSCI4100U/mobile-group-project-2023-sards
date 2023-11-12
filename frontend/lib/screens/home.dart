@@ -167,7 +167,7 @@ class _HomePageState extends State<HomePage> {
               content: Text('Note successfully saved'),
             ),
           );
-          if(providerSettings.sync){
+          if (providerSettings.sync) {
             Sync.uploadToCloud(context);
           }
         } else {
@@ -180,12 +180,17 @@ class _HomePageState extends State<HomePage> {
         }
       });
     }
+
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
-        leading: makeBigger(IconButton(icon: const Icon(Icons.menu),
-          onPressed: (){scaffoldKey.currentState!.openDrawer();},
-          tooltip: 'User Information',)),
+        leading: makeBigger(IconButton(
+          icon: const Icon(Icons.menu),
+          onPressed: () {
+            scaffoldKey.currentState!.openDrawer();
+          },
+          tooltip: 'User Information',
+        )),
         title: _searchBoolean ? _buildSearchField() : null,
         actions: <Widget>[
           makeBigger(IconButton(
@@ -201,9 +206,10 @@ class _HomePageState extends State<HomePage> {
           makeBigger(IconButton(
             onPressed: () {
               Navigator.push(
-                context,
-                  MaterialPageRoute(builder: (context) => const SettingsPage()));
-              },
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const SettingsPage()));
+            },
             icon: const Icon(Icons.settings),
             tooltip: 'Settings',
           )),

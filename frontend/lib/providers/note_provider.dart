@@ -1,11 +1,30 @@
 // import 'dart:io' show Platform;
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:kanjou/models/note.dart';
 import 'package:kanjou/services/database_helper.dart';
 import 'package:kanjou/services/firestore_helper.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:uuid/uuid.dart';
+
+const url = 'https://google.com'; // URL of the server
+Future<String> classifyNote(String body) async {
+  print("Classifying note: $body");
+  Response response;
+  response = await post(Uri.parse(url),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: body)
+      .catchError((e) => e);
+  if (response.statusCode == 201) {
+    return response.body;
+  }
+  return '';
+}
 
 class NotesProvider extends ChangeNotifier {
   final localDb = DatabaseHelper();
@@ -23,8 +42,10 @@ class NotesProvider extends ChangeNotifier {
 
     // databaseFactory = databaseFactoryFfi;
 
-    // db = DatabaseHelper.init();
-    refresh();
+    // Initialize the local DB
+    localDb.init().then((_) async {
+      await refresh();
+    });
   }
 
   Future<void> refresh() async {
@@ -44,7 +65,7 @@ class NotesProvider extends ChangeNotifier {
       ...dataMap,
       'date': DateTime.now().toString(),
       'id': uuid.v4(),
-      'tagId': null,
+      'tag': await classifyNote(dataMap['text']),
 
       // 'color': dataMap['color'],
       // 'isImportant': dataMap['isImportant'],
