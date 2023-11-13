@@ -26,7 +26,8 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  ConnectionStatusSingleton connectionStatus = ConnectionStatusSingleton.getInstance();
+  ConnectionStatusSingleton connectionStatus =
+      ConnectionStatusSingleton.getInstance();
   connectionStatus.initialize();
 
   runApp(MyApp(theme: theme));

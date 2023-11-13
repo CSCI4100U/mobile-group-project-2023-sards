@@ -242,8 +242,8 @@ class _HomePageState extends State<HomePage> {
           notesProvider.insertNote(returnedMap);
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Note successfully saved'),
-            ),
+                content: Text('Note successfully saved'),
+                backgroundColor: Colors.yellow),
           );
           if (providerSettings.sync) {
             Sync.uploadToCloud(context);
@@ -253,6 +253,7 @@ class _HomePageState extends State<HomePage> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('The note was not saved'),
+              backgroundColor: Colors.yellow,
             ),
           );
         }
@@ -267,43 +268,49 @@ class _HomePageState extends State<HomePage> {
           onPressed: () {
             scaffoldKey.currentState!.openDrawer();
           },
+          color: Colors.yellow,
           tooltip: 'User Information',
         )),
         title: _buildSearchField(notesProvider),
         actions: <Widget>[
-          const SizedBox(width: 12),
-          makeBigger(IconButton(
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const SettingsPage()));
-            },
-            icon: const Icon(Icons.settings),
-            tooltip: 'Settings',
-          )),
-          // Transform.scale(
-          //   scale: 1.5,
-          //   child: IconButton(
-          //     onPressed: () {},
-          //     icon: const Icon(Icons.more_vert),
-          //   ),
-          // )
+          const SizedBox(width: 2),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+                horizontal: 16.0), // Add padding here
+            child: makeBigger(IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const SettingsPage()));
+              },
+              icon: const Icon(Icons.settings),
+              color: Colors.yellow,
+              tooltip: 'Settings',
+            )),
+          ),
         ],
       ),
-      body: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Expanded(child: _buildListOfNotes(notesProvider)),
-        ],
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Expanded(child: _buildListOfNotes(notesProvider)),
+          ],
+        ),
       ),
-      floatingActionButton: Transform.scale(
-        scale: 1.2, // Increase the size
-        child: FloatingActionButton(
-          tooltip: 'Add a Note',
-          onPressed: addNote,
-          child: const Icon(Icons.edit_note_sharp,
-              color: Color.fromARGB(255, 0, 0, 0)),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Transform.scale(
+          scale: 1.2, // Increase the size
+          child: FloatingActionButton(
+            tooltip: 'Add a Note',
+            onPressed: addNote,
+            child: const Icon(Icons.edit_note_sharp,
+                color: Color.fromARGB(255, 0, 0, 0)),
+            backgroundColor: Colors.yellow,
+          ),
         ),
       ),
       drawer: const CustomDrawer(),
