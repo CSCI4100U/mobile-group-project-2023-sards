@@ -10,3 +10,7 @@ Press the + icon to enter the Create Note page and enter your note information. 
 ## Settings
 In the settings page, you can choose whether to sync your notes to the cloud when you create a new one. There's also a button to import the notes from the cloud.
 Currently, the other options aren't implemented.
+
+## Categorization
+When you save a note, it will trigger an HTTP request to our Flask server, which will use an ML model to assign a category to the note.
+If this fails, our code will catch the error and the Tag displayed on the note will be "No Tag".
