@@ -28,7 +28,8 @@ void main() async {
 
   notificationService();
 
-  ConnectionStatusSingleton connectionStatus = ConnectionStatusSingleton.getInstance();
+  ConnectionStatusSingleton connectionStatus =
+      ConnectionStatusSingleton.getInstance();
   connectionStatus.initialize();
 
   runApp(MyApp(theme: theme));

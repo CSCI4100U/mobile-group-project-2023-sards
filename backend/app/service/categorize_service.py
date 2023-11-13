@@ -4,7 +4,7 @@ from utils.inputs import input
 from cohere.responses.classify import Example
 
 co = cohere.Client("<COHERE API KEY>")
-openai.api_key = "<OPENAI API KEY"
+openai.api_key = "<OPENAI API KEY>"
 
 def train_and_execute_model(input):
     inputs = [input]
@@ -25,9 +25,70 @@ def train_and_execute_model(input):
         examples = examples
     )
 
-    if response.classifications[0].confidence <= 0.85:
+    if response.classifications[0].confidence <= 0.75:
         return categorize_with_cohere(input)
+    
+    new_data = data[tag].append(inputs)
+    data[tag] = new_data
+    json.dump(data, open("utils/data.json", "w"))
     return response.classifications[0].prediction, response.classifications[0].confidence
+
+
+def categorize_with_cohere(note: str):
+    init_prompt = "Which general category does this text fall under? Give me only one specific response.\n"
+    init_prompt += note
+
+    response = openai.Completion.create(
+        model="text-davinci-003",
+        prompt=init_prompt,
+        temperature=0.7,
+        max_tokens=3196,
+        n=1,
+        stop=None
+    )
+    tag = response["choices"][0]["text"]
+    tag = tag.strip()
+    tag = tag.strip(",.")
+
+
+    data = None
+    with open("utils/data.json", "r") as json_file:
+        data = json.load(json_file)
+
+    # IF TAG IS IN DATA, CREATE NEW DATA ANYWAY AND APPEND IT ONTO THE EXISTING VALUES IN KEY
+    if tag in data:
+        new_data = data[tag].append(note)
+        data[tag] = new_data
+        json.dump(data, open("utils/data.json", "w"))
+        return tag
+    
+    init_prompt = f"Generate 10 more notes like {note} but shorter in length."
+    response = openai.Completion.create(
+        model="text-davinci-003",
+        prompt=init_prompt,
+        temperature=0.7,
+        max_tokens=3196,
+        n=1,
+        stop=None
+    )
+
+    generated_prompts = response["choices"][0]["text"]
+    
+    unclean_training_data = generated_prompts.split('\n')
+    training_data = [x for x in unclean_training_data if x != '']
+
+    update_dict = {}
+    update_dict[tag] = training_data
+    data = None
+
+    with open("utils/data.json", "r") as json_file:
+        data = json.load(json_file)
+    
+    data.update(update_dict)
+    json.dump(data, open("utils/data.json", "w"))
+
+    return tag
+
 
 def categorize_random_note(note: str):
 
@@ -66,55 +127,3 @@ def categorize_random_note(note: str):
         data.update(update_dict)
         json.dump(data, open("utils/tags.json", "w"))
         return tag
-
-def categorize_with_cohere(note: str):
-    init_prompt = "Which general category does this text fall under? Give me only one specific response.\n"
-    init_prompt += note
-
-    response = openai.Completion.create(
-        model="text-davinci-003",
-        prompt=init_prompt,
-        temperature=0.7,
-        max_tokens=3196,
-        n=1,
-        stop=None
-    )
-    tag = response["choices"][0]["text"]
-    tag = tag.strip()
-    tag = tag.strip(",.")
-
-
-    data = None
-    with open("utils/data.json", "r") as json_file:
-        data = json.load(json_file)
-
-    # IF TAG IS IN DATA, CREATE NEW DATA ANYWAY AND APPEND IT ONTO THE EXISTING VALUES IN KEY
-    if tag in data:
-        return tag
-    
-    init_prompt = f"Generate 10 more notes like {note} but shorter in length."
-    response = openai.Completion.create(
-        model="text-davinci-003",
-        prompt=init_prompt,
-        temperature=0.7,
-        max_tokens=3196,
-        n=1,
-        stop=None
-    )
-
-    generated_prompts = response["choices"][0]["text"]
-    
-    unclean_training_data = generated_prompts.split('\n')
-    training_data = [x for x in unclean_training_data if x != '']
-
-    update_dict = {}
-    update_dict[tag] = training_data
-    data = None
-
-    with open("utils/data.json", "r") as json_file:
-        data = json.load(json_file)
-    
-    data.update(update_dict)
-    json.dump(data, open("utils/data.json", "w"))
-
-    return tag
