@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 
 import 'package:flutter/services.dart'; // For rootBundle
 import 'dart:convert'; // For jsonDecode
-
+import 'package:kanjou/services/notification_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
@@ -25,6 +25,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  notificationService();
 
   ConnectionStatusSingleton connectionStatus =
       ConnectionStatusSingleton.getInstance();

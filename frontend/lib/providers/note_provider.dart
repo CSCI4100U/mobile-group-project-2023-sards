@@ -11,7 +11,6 @@ import 'package:kanjou/services/database_helper.dart';
 import 'package:kanjou/services/firestore_helper.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:uuid/uuid.dart';
-import 'package:http/http.dart' as http;
 
 var url =
     "http://192.168.2.26:8080/api/categorize_note"; // URL of the server
@@ -36,11 +35,11 @@ class NotesProvider extends ChangeNotifier {
   }
 
   Future<String> classifyNote(String body) async {
-    Map<String, dynamic> jsonData = {'note': '$body'};
+    Map<String, dynamic> jsonData = {'note': body};
 
     var jsonBody = json.encode(jsonData);
     try {
-      var response = await http.post(Uri.parse(url),
+      var response = await post(Uri.parse(url),
           headers: {"Content-Type": "application/json"}, body: jsonBody);
 
       if (response.statusCode == 200) {

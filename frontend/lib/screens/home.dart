@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:kanjou/models/note.dart';
 import 'package:kanjou/screens/create_note.dart';
 import 'package:kanjou/widgets/custom_drawer.dart';
 import 'package:kanjou/screens/settings_page.dart';
@@ -51,23 +52,90 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  bool _searchBoolean = false;
   HashSet selectedNoteIndexes = HashSet<int>();
   var scaffoldKey = GlobalKey<ScaffoldState>();
+  List<Note> results = [];
 
-  Widget _buildSearchField() {
-    return TextField(
-      decoration: const InputDecoration(
-        hintStyle: TextStyle(color: Colors.yellow),
-        hintText: "Search...",
-      ),
-      onSubmitted: (value) {
-        // Handle search here
-      },
-    );
+  // Method to search for a note based on the title, text, or tag
+  // This method returns the list of notes sorted based on how close the title and text is to the query
+  List<Note> fuzzySearch(String query, NotesProvider notesProvider) {
+    List<Note> notes = notesProvider.notes;
+    List<Note> results = [];
+    query = query.toLowerCase();
+
+    for (int i = 0; i < notes.length; i++) {
+      Note note = notes[i];
+      if (note.title.toLowerCase().contains(query) ||
+          note.text.toLowerCase().contains(query) ||
+          note.tag.toLowerCase().contains(query)) {
+        results.add(note);
+      }
+    }
+    results.sort((a, b) {
+      int aScore = 0;
+      int bScore = 0;
+      if (a.title.toLowerCase().contains(query.toLowerCase())) {
+        aScore += 2;
+      }
+      if (a.text.toLowerCase().contains(query.toLowerCase())) {
+        aScore += 1;
+      }
+      if (a.tag.toLowerCase().contains(query.toLowerCase())) {
+        aScore += 1;
+      }
+      if (b.title.toLowerCase().contains(query.toLowerCase())) {
+        bScore += 2;
+      }
+      if (b.text.toLowerCase().contains(query.toLowerCase())) {
+        bScore += 1;
+      }
+      if (b.tag.toLowerCase().contains(query.toLowerCase())) {
+        bScore += 1;
+      }
+      return bScore - aScore;
+    });
+    return results;
   }
 
-  Widget _buildListOfNotes(NotesProvider providerNotes) {
+  Widget _buildSearchField(NotesProvider notesProvider) {
+    return SearchAnchor(
+        builder: (BuildContext context, SearchController controller) {
+      return SearchBar(
+        controller: controller,
+        hintText: 'Search for a note',
+        onTap: () {
+          controller.openView();
+        },
+        onChanged: (String query) {
+          controller.openView();
+        },
+        leading: const Icon(Icons.search),
+        onSubmitted: (query) {},
+      );
+    }, suggestionsBuilder: (BuildContext context, SearchController controller) {
+      // print(results.length);
+      // Make a list based on the results list
+      results = fuzzySearch(controller.text, notesProvider);
+
+      return List<Widget>.generate(results.length, (int index) {
+        return ListTile(
+          title: Text(results[index].title),
+          subtitle: Text(results[index].text),
+          onTap: () {
+            controller.closeView("");
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => NoteForm(
+                          noteData: results[index].toMap(),
+                        )));
+          },
+        );
+      });
+    });
+  }
+
+  Widget _buildListOfNotes(NotesProvider notesProvider) {
     return MasonryGridView.count(
       padding: EdgeInsets.zero,
       shrinkWrap: true,
@@ -75,9 +143,9 @@ class _HomePageState extends State<HomePage> {
       crossAxisCount: 2,
       mainAxisSpacing: 3,
       crossAxisSpacing: 4,
-      itemCount: providerNotes.notes.length,
+      itemCount: notesProvider.notes.length,
       itemBuilder: (context, index) {
-        final note = providerNotes.notes[index];
+        final note = notesProvider.notes[index];
         return GestureDetector(
           onTap: () async {
             Map<String, dynamic>? noteMap = await Navigator.push(
@@ -88,13 +156,13 @@ class _HomePageState extends State<HomePage> {
                           noteData: note.toMap(),
                         )));
             if (noteMap != null) {
-              await providerNotes.updateNote(noteMap, index);
+              await notesProvider.updateNote(noteMap, index);
             } else {
               // Show a popup saying that the note was not updated
             }
           },
           onLongPress: () async {
-            await providerNotes.deleteNote(
+            await notesProvider.deleteNote(
                 index); // This is a temporary solution, will be changed later
           },
           child: Card(
@@ -106,15 +174,13 @@ class _HomePageState extends State<HomePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                        note.tag != ""
-                            ? note.tag
-                            : "No tag",
-                        maxLines: 1,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      note.tag != "" ? note.tag : "No tag",
+                      maxLines: 1,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 4.0),
@@ -161,7 +227,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     // CollectionReference notesCollection =
     // FirebaseFirestore.instance.collection('notes');
-    final providerNotes = Provider.of<NotesProvider>(context);
+    final notesProvider = Provider.of<NotesProvider>(context);
     final providerSettings = Provider.of<SettingsProvider>(context);
     // These methods have to be inside the build method because they use context
     addNote() {
@@ -173,12 +239,11 @@ class _HomePageState extends State<HomePage> {
             returnedMap.isNotEmpty &&
             returnedMap['title'] != "" &&
             returnedMap['text'] != "") {
-          providerNotes.insertNote(returnedMap);
+          notesProvider.insertNote(returnedMap);
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Note successfully saved'),
-                backgroundColor: Colors.yellow
-            ),
+                content: Text('Note successfully saved'),
+                backgroundColor: Colors.yellow),
           );
           if (providerSettings.sync) {
             Sync.uploadToCloud(context);
@@ -206,24 +271,12 @@ class _HomePageState extends State<HomePage> {
           color: Colors.yellow,
           tooltip: 'User Information',
         )),
-        title: _searchBoolean ? _buildSearchField() : null,
+        title: _buildSearchField(notesProvider),
         actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 1.0),
-            child: makeBigger(IconButton(
-              onPressed: () {
-                setState(() {
-                  _searchBoolean = !_searchBoolean;
-                });
-              },
-              icon: Icon(_searchBoolean ? Icons.clear : Icons.search,
-                  color: Colors.yellow),
-              tooltip: 'Search for a note',
-            )),
-          ),
           const SizedBox(width: 2),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0), // Add padding here
+            padding: const EdgeInsets.symmetric(
+                horizontal: 16.0), // Add padding here
             child: makeBigger(IconButton(
               onPressed: () {
                 Navigator.push(
@@ -243,7 +296,7 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           mainAxisSize: MainAxisSize.max,
           children: [
-            Expanded(child: _buildListOfNotes(providerNotes)),
+            Expanded(child: _buildListOfNotes(notesProvider)),
           ],
         ),
       ),
