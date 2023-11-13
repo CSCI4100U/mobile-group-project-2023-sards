@@ -4,7 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 import 'package:kanjou/models/note.dart';
 import 'package:kanjou/services/connectivity.dart';
 import 'package:kanjou/services/database_helper.dart';
@@ -12,8 +12,17 @@ import 'package:kanjou/services/firestore_helper.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:uuid/uuid.dart';
 
-var url =
-    "http://192.168.2.26:8080/api/categorize_note"; // URL of the server
+var url = "https://notesaimobile.azurewebsites.net/api/categorize_note"; // URL of the server
+
+/* 
+
+The above endpoint was previously committed but reverted to localhost due to a server configuration issue on Azure.
+The issue was pinpointed and resolved so the endpoint is changed and working. 
+Nothing else has changed in the codebase or on the backend.
+
+Please check commit 8c8a993 and commit beef2fe
+
+*/
 
 class NotesProvider extends ChangeNotifier {
   final localDb = DatabaseHelper();
@@ -39,7 +48,7 @@ class NotesProvider extends ChangeNotifier {
 
     var jsonBody = json.encode(jsonData);
     try {
-      var response = await post(Uri.parse(url),
+      var response = await http.post(Uri.parse(url),
           headers: {"Content-Type": "application/json"}, body: jsonBody);
 
       if (response.statusCode == 200) {
