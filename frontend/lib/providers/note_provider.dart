@@ -14,7 +14,7 @@ import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
 
 var url =
-    "https://notesaimobile.azurewebsites.net/api/categorize_note"; // URL of the server
+    "http://192.168.2.26:8080/api/categorize_note"; // URL of the server
 
 class NotesProvider extends ChangeNotifier {
   final localDb = DatabaseHelper();
