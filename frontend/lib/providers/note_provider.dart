@@ -13,7 +13,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:uuid/uuid.dart';
 
 var url =
-    "http://192.168.2.26:8080/api/categorize_note"; // URL of the server
+    "https://notesaimobile.azurewebsites.net/api/categorize_note"; // URL of the server
 
 class NotesProvider extends ChangeNotifier {
   final localDb = DatabaseHelper();
