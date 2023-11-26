@@ -14,7 +14,7 @@ class NoteForm extends StatefulWidget {
   final Map<String, dynamic>? noteData;
 
   @override
-  _NoteFormState createState() => _NoteFormState();
+  State<NoteForm> createState() => _NoteFormState();
 }
 
 class _NoteFormState extends State<NoteForm> {
