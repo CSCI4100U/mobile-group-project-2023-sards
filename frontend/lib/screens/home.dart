@@ -25,7 +25,7 @@ class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
@@ -232,9 +232,9 @@ class _HomePageState extends State<HomePage> {
           child: FloatingActionButton(
             tooltip: 'Add a Note',
             onPressed: addNote,
+            backgroundColor: Colors.yellow,
             child: const Icon(Icons.edit_note_sharp,
                 color: Color.fromARGB(255, 0, 0, 0)),
-            backgroundColor: Colors.yellow,
           ),
         ),
       ),
