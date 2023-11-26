@@ -9,7 +9,6 @@ import 'package:kanjou/models/note.dart';
 import 'package:kanjou/services/connectivity.dart';
 import 'package:kanjou/services/database_helper.dart';
 import 'package:kanjou/services/firestore_helper.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:uuid/uuid.dart';
 
 var url = "https://notesaimobile.azurewebsites.net/api/categorize_note"; // URL of the server
@@ -72,9 +71,7 @@ class NotesProvider extends ChangeNotifier {
       notes.forEach((note) async {
         print('hasConnection: ${note.tag}');
         if (note.tag == '') {
-          note.tag = await classifyNote(note.title +
-              ":" +
-              note.text); // This is a blocking call, so we need to make it async
+          note.tag = await classifyNote("${note.title}:${note.text}"); // This is a blocking call, so we need to make it async
           await localDb.updateNote(
               note); // This is a blocking call, so we need to make it async
         }

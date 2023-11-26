@@ -12,30 +12,7 @@ import 'package:kanjou/providers/note_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:kanjou/services/sync.dart';
 
-const months = {
-  1: 'Jan',
-  2: 'Feb',
-  3: 'Mar',
-  4: 'Apr',
-  5: 'May',
-  6: 'June',
-  7: 'July',
-  8: 'Aug',
-  9: 'Sept',
-  10: 'Oct',
-  11: 'Nov',
-  12: 'Dec'
-};
-
-// This method converts a date time string to the format of Month Name dd, yyyy
-String convertStringToDate(String date) {
-  try {
-    DateTime dateTime = DateTime.parse(date);
-    return "${months[dateTime.month]} ${dateTime.day.toString().padLeft(2, '0')}, ${dateTime.year.toString()}";
-  } catch (e) {
-    return "No date";
-  }
-}
+import 'package:kanjou/widgets/note_card.dart';
 
 Transform makeBigger(IconButton icon) {
   return Transform.scale(
@@ -67,7 +44,7 @@ class _HomePageState extends State<HomePage> {
       Note note = notes[i];
       if (note.title.toLowerCase().contains(query) ||
           note.text.toLowerCase().contains(query) ||
-          note.tag.toLowerCase().contains(query)) {
+          note.tag != null && note.tag!.toLowerCase().contains(query)) {
         results.add(note);
       }
     }
@@ -80,7 +57,7 @@ class _HomePageState extends State<HomePage> {
       if (a.text.toLowerCase().contains(query.toLowerCase())) {
         aScore += 1;
       }
-      if (a.tag.toLowerCase().contains(query.toLowerCase())) {
+      if (a.tag != null && a.tag!.toLowerCase().contains(query.toLowerCase())) {
         aScore += 1;
       }
       if (b.title.toLowerCase().contains(query.toLowerCase())) {
@@ -89,7 +66,7 @@ class _HomePageState extends State<HomePage> {
       if (b.text.toLowerCase().contains(query.toLowerCase())) {
         bScore += 1;
       }
-      if (b.tag.toLowerCase().contains(query.toLowerCase())) {
+      if (b.tag != null && b.tag!.toLowerCase().contains(query.toLowerCase())) {
         bScore += 1;
       }
       return bScore - aScore;
@@ -165,59 +142,7 @@ class _HomePageState extends State<HomePage> {
             await notesProvider.deleteNote(
                 index); // This is a temporary solution, will be changed later
           },
-          child: Card(
-              color: const Color.fromARGB(255, 23, 23, 23),
-              child: Padding(
-                padding: const EdgeInsets.all(13.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      note.tag != "" ? note.tag : "No tag",
-                      maxLines: 1,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 4.0),
-                      child: Text(
-                        note.title,
-                        maxLines: 1,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 4.0),
-                      child: Text(
-                        note.date != ""
-                            ? convertStringToDate(note.date)
-                            : "No date",
-                        maxLines: 1,
-                        style: const TextStyle(
-                          color: Color.fromARGB(255, 111, 111, 111),
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
-                    Text(
-                      note.text,
-                      maxLines: 8,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
-              )),
+          child: NoteCard(note: note),
         );
       },
     );
