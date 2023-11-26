@@ -16,7 +16,7 @@ class DatabaseHelper {
             title TEXT NOT NULL,
             text TEXT NOT NULL,
             date TEXT NOT NULL,
-            tag TEXT NOT NULL
+            tag TEXT
           )
         ''');
     });
