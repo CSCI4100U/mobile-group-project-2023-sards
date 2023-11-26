@@ -11,12 +11,13 @@ import 'package:kanjou/services/database_helper.dart';
 import 'package:kanjou/services/firestore_helper.dart';
 import 'package:uuid/uuid.dart';
 
-var url = "https://notesaimobile.azurewebsites.net/api/categorize_note"; // URL of the server
+var url =
+    "https://notesaimobile.azurewebsites.net/api/categorize_note"; // URL of the server
 
-/* 
+/*
 
 The above endpoint was previously committed but reverted to localhost due to a server configuration issue on Azure.
-The issue was pinpointed and resolved so the endpoint is changed and working. 
+The issue was pinpointed and resolved so the endpoint is changed and working.
 Nothing else has changed in the codebase or on the backend.
 
 Please check commit 8c8a993 and commit beef2fe
@@ -42,25 +43,26 @@ class NotesProvider extends ChangeNotifier {
     connectionStatus.connectionChange.listen(connectionChanged);
   }
 
-  Future<String> classifyNote(String body) async {
+  Future<void> classifyNote(Note note, int i) async {
+    String body = "${note.title}:${note.text}";
     Map<String, dynamic> jsonData = {'note': body};
 
     var jsonBody = json.encode(jsonData);
     try {
       var response = await http.post(Uri.parse(url),
           headers: {"Content-Type": "application/json"}, body: jsonBody);
-
       if (response.statusCode == 200) {
         var categoryJson = jsonDecode(response.body);
-        return categoryJson["category"].toString();
+        String category = categoryJson["category"][0].toString();
+        Note newNote = Note.fromMap({...note.toMap(), 'tag': category});
+        notes[i] = newNote;
+        notifyListeners();
+        await localDb.updateNote(newNote);
       } else {
-        print("here");
-        print(response.statusCode.toString());
-        return response.statusCode.toString();
+        debugPrint(response.statusCode.toString());
       }
     } catch (e) {
-      print("or here");
-      return e.toString();
+      debugPrint(e.toString());
     }
   }
 
@@ -68,15 +70,11 @@ class NotesProvider extends ChangeNotifier {
     print("hasConnection: $hasConnection");
     // Update the notes which have the tag as a empty string and call notifyListeners()
     if (hasConnection) {
-      notes.forEach((note) async {
-        print('hasConnection: ${note.tag}');
-        if (note.tag == '') {
-          note.tag = await classifyNote("${note.title}:${note.text}"); // This is a blocking call, so we need to make it async
-          await localDb.updateNote(
-              note); // This is a blocking call, so we need to make it async
+      for (int i = 0; i < notes.length; i++) {
+        if (notes[i].tag == null) {
+          classifyNote(notes[i], i);
         }
-      });
-      notifyListeners();
+      }
     }
   }
 
@@ -97,7 +95,7 @@ class NotesProvider extends ChangeNotifier {
       ...dataMap,
       'date': DateTime.now().toString(),
       'id': uuid.v4(),
-      'tag': await classifyNote(dataMap['title'] + ":" + dataMap['text']),
+      'tag': null,
 
       // 'color': dataMap['color'],
       // 'isImportant': dataMap['isImportant'],
@@ -109,6 +107,7 @@ class NotesProvider extends ChangeNotifier {
     notes.add(note);
     notifyListeners();
     await localDb.insertNote(note);
+    classifyNote(note, notes.length - 1);
   }
 
   Future<void> updateNote(Map<String, dynamic> noteMap, int i) async {
@@ -116,5 +115,6 @@ class NotesProvider extends ChangeNotifier {
     notes[i] = note;
     notifyListeners();
     await localDb.updateNote(note);
+    classifyNote(note, i);
   }
 }
