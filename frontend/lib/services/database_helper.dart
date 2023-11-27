@@ -5,6 +5,13 @@ import 'package:kanjou/models/note.dart';
 class DatabaseHelper {
   Database? db;
 
+  // Singleton Pattern
+  static final DatabaseHelper _instance = DatabaseHelper._();
+  DatabaseHelper._();
+  factory DatabaseHelper(){
+    return _instance;
+  }
+
   Future<void> init() async {
     String path = await getDatabasesPath();
     String dbPath = join(path, 'notes.db');
