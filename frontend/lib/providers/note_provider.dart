@@ -14,16 +14,6 @@ import 'package:uuid/uuid.dart';
 var url =
     "https://notesaimobile.azurewebsites.net/api/categorize_note"; // URL of the server
 
-/*
-
-The above endpoint was previously committed but reverted to localhost due to a server configuration issue on Azure.
-The issue was pinpointed and resolved so the endpoint is changed and working.
-Nothing else has changed in the codebase or on the backend.
-
-Please check commit 8c8a993 and commit beef2fe
-
-*/
-
 class NotesProvider extends ChangeNotifier {
   final localDb = DatabaseHelper();
   final cloudDb = FirestoreHelper();
@@ -83,8 +73,8 @@ class NotesProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> deleteNote(int i) async {
-    Note note = notes[i];
+  Future<void> deleteNote(Note note) async {
+    int i = notes.indexWhere((element) => element.id == note.id);
     notes.removeAt(i);
     notifyListeners();
     await localDb.deleteNote(note);
