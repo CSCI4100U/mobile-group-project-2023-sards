@@ -11,6 +11,7 @@ import 'package:kanjou/providers/settings_provider.dart';
 import 'package:kanjou/providers/note_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:kanjou/services/sync.dart';
+import 'package:kanjou/utilities/fuzzy_search.dart';
 
 import 'package:kanjou/widgets/note_card.dart';
 
@@ -29,50 +30,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  HashSet selectedNoteIndexes = HashSet<int>();
+  HashSet<int> selectedNoteIndexes = HashSet<int>();
   var scaffoldKey = GlobalKey<ScaffoldState>();
-  List<Note> results = [];
-
-  // Method to search for a note based on the title, text, or tag
-  // This method returns the list of notes sorted based on how close the title and text is to the query
-  List<Note> fuzzySearch(String query, NotesProvider notesProvider) {
-    List<Note> notes = notesProvider.notes;
-    List<Note> results = [];
-    query = query.toLowerCase();
-
-    for (int i = 0; i < notes.length; i++) {
-      Note note = notes[i];
-      if (note.title.toLowerCase().contains(query) ||
-          note.text.toLowerCase().contains(query) ||
-          note.tag != null && note.tag!.toLowerCase().contains(query)) {
-        results.add(note);
-      }
-    }
-    results.sort((a, b) {
-      int aScore = 0;
-      int bScore = 0;
-      if (a.title.toLowerCase().contains(query.toLowerCase())) {
-        aScore += 2;
-      }
-      if (a.text.toLowerCase().contains(query.toLowerCase())) {
-        aScore += 1;
-      }
-      if (a.tag != null && a.tag!.toLowerCase().contains(query.toLowerCase())) {
-        aScore += 1;
-      }
-      if (b.title.toLowerCase().contains(query.toLowerCase())) {
-        bScore += 2;
-      }
-      if (b.text.toLowerCase().contains(query.toLowerCase())) {
-        bScore += 1;
-      }
-      if (b.tag != null && b.tag!.toLowerCase().contains(query.toLowerCase())) {
-        bScore += 1;
-      }
-      return bScore - aScore;
-    });
-    return results;
-  }
+  bool _isSelectMode = false;
 
   Widget _buildSearchField(NotesProvider notesProvider) {
     return SearchAnchor(
@@ -92,23 +52,42 @@ class _HomePageState extends State<HomePage> {
     }, suggestionsBuilder: (BuildContext context, SearchController controller) {
       // print(results.length);
       // Make a list based on the results list
-      results = fuzzySearch(controller.text, notesProvider);
+      List<Note> results = fuzzySearch(controller.text, notesProvider);
 
       return List<Widget>.generate(results.length, (int index) {
         return ListTile(
-          title: Text(results[index].title),
-          subtitle: Text(results[index].text),
-          onTap: () {
-            controller.closeView("");
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => NoteForm(
-                          noteData: results[index].toMap(),
-                        )));
-          },
-        );
+            title: Text(results[index].title),
+            subtitle: Text(results[index].text),
+            onTap: () async {
+              controller.closeView("");
+              Map<String, dynamic>? noteMap = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => NoteForm(
+                            noteData: results[index].toMap(),
+                          )));
+              if (noteMap != null) {
+                await notesProvider.updateNote(noteMap, index).then((val) {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("Note successfully updated")));
+                });
+              }
+            });
       });
+    });
+  }
+
+  void toggleSelectMode({int? index}) {
+    setState(() {
+      if (_isSelectMode) {
+        _isSelectMode = false;
+        selectedNoteIndexes.clear();
+        return;
+      }
+      _isSelectMode = true;
+      if (index != null) {
+        selectedNoteIndexes.add(index);
+      }
     });
   }
 
@@ -124,25 +103,37 @@ class _HomePageState extends State<HomePage> {
       itemBuilder: (context, index) {
         final note = notesProvider.notes[index];
         return GestureDetector(
-          onTap: () async {
-            Map<String, dynamic>? noteMap = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => NoteForm(
-                          // speechToText: _speechToText,
-                          noteData: note.toMap(),
-                        )));
-            if (noteMap != null) {
-              await notesProvider.updateNote(noteMap, index);
-            } else {
-              // Show a popup saying that the note was not updated
-            }
+          onTap: _isSelectMode
+              ? () {
+                  setState(() {
+                    if (!selectedNoteIndexes.add(index)) {
+                      selectedNoteIndexes.remove(index);
+                    }
+                  });
+                }
+              : () async {
+                  Map<String, dynamic>? noteMap = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => NoteForm(
+                                // speechToText: _speechToText,
+                                noteData: note.toMap(),
+                              )));
+                  if (noteMap != null) {
+                    await notesProvider.updateNote(noteMap, index).then((val) {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text("Note successfully updated")));
+                    });
+                  }
+                },
+          onLongPress: () {
+            toggleSelectMode(index: index);
           },
-          onLongPress: () async {
-            await notesProvider.deleteNote(
-                index); // This is a temporary solution, will be changed later
-          },
-          child: NoteCard(note: note),
+          child: NoteCard(
+            note: note,
+            isSelected:
+                !_isSelectMode ? null : selectedNoteIndexes.contains(index),
+          ),
         );
       },
     );
@@ -155,7 +146,7 @@ class _HomePageState extends State<HomePage> {
     final notesProvider = Provider.of<NotesProvider>(context);
     final providerSettings = Provider.of<SettingsProvider>(context);
     // These methods have to be inside the build method because they use context
-    addNote() {
+    void addNote() {
       Navigator.push(context,
               MaterialPageRoute(builder: (context) => const NoteForm()))
           .then((returnedMap) {
@@ -231,10 +222,38 @@ class _HomePageState extends State<HomePage> {
           scale: 1.2, // Increase the size
           child: FloatingActionButton(
             tooltip: 'Add a Note',
-            onPressed: addNote,
+            onPressed: !_isSelectMode
+                ? addNote
+                : () async {
+                    await showDialog(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                              title: const Text('Delete selected notes?'),
+                              actions: [
+                                ElevatedButton(
+                                    onPressed: () {
+                                      (() async {
+                                        List<Note> targets = selectedNoteIndexes.map((int i)=>notesProvider.notes[i]).toList();
+                                        for (Note note in targets) {
+                                          notesProvider.deleteNote(note);
+                                        }
+                                      })()
+                                          .then((res) {
+                                        toggleSelectMode();
+                                        Navigator.of(context).pop();
+                                      });
+                                    },
+                                    child: const Text('Delete')),
+                                TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(),
+                                    child: const Text('Cancel'))
+                              ],
+                            ));
+                  },
             backgroundColor: Colors.yellow,
-            child: const Icon(Icons.edit_note_sharp,
-                color: Color.fromARGB(255, 0, 0, 0)),
+            child: Icon(_isSelectMode ? Icons.delete : Icons.edit_note_sharp,
+                color: const Color.fromARGB(255, 0, 0, 0)),
           ),
         ),
       ),
