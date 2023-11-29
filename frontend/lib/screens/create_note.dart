@@ -24,6 +24,7 @@ class _NoteFormState extends State<NoteForm> {
   bool _speechToTextEnabled = false;
   SpeechToText speechToText = SpeechToText();
   FlutterTts flutterTts = FlutterTts();
+  //late TextStyle _textStyle;
 
   @override
   void initState() {
@@ -33,8 +34,30 @@ class _NoteFormState extends State<NoteForm> {
     _textController =
         TextEditingController(text: widget.noteData?['text'] ?? "");
     _initTts();
+    //_textStyle = TextStyle(); // Initialize with default style
   }
 
+  void applyFormatting({bool bold = false, bool italic = false}) {
+    final currentSelection = _textController.selection;
+    final currentText = _textController.text;
+    final selectedText = currentSelection.textInside(currentText);
+
+    final formattedText =
+    bold ? '$selectedText' : italic ? '*$selectedText*' : selectedText;
+
+    final newText = currentText.replaceRange(
+      currentSelection.start,
+      currentSelection.end,
+      formattedText,
+    );
+
+    setState(() {
+      _textController.text = newText;
+      _textController.selection = TextSelection.collapsed(
+        offset: currentSelection.start + formattedText.length,
+      );
+    });
+  }
   @override
   void dispose() {
     _titleController.dispose();
@@ -121,37 +144,79 @@ class _NoteFormState extends State<NoteForm> {
     }
   }
 
-  // Future<String> getCategory (String title, String text) async {
-  //
-  //
-  //   Map<String, dynamic> jsonData = {
-  //     'note': "$title: $text"
-  //   };
-  //   var jsonBody = json.encode(jsonData);
-  //
-  //   try {
-  //     var response = await http.post(Uri.parse(endpoint),
-  //         headers: {"Content-Type": "application/json"}, body: jsonBody);
-  //   } catch(e){
-  //
-  //   }
-  //
-  //   if (response.statusCode == 200) {
-  //     var categoryJson = jsonDecode(response.body);
-  //     return categoryJson["category"].toString();
-  //   }
-  //   print("response is error!");
-  //   return "Error: ${response.statusCode}";
-  // }
+  Widget buildToolbar() {
+    return Container(
+      padding: EdgeInsets.all(8.0),
+      color: Colors.grey[200], // Background color of the toolbar
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            IconButton(
+              icon: Icon(Icons.format_bold),
+              onPressed: () {
+                // Apply bold formatting to the selected text
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.format_italic),
+              onPressed: () {
+                // Apply italic formatting to the selected text
+
+              },
+            ),
+            // Add more buttons for other formatting options as needed
+          ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
         child: Scaffold(
           appBar: AppBar(
-            title: const Text(
-              'Notes',
-              style: TextStyle(color: Colors.yellow),
+            title: TextField(
+              controller: _titleController,
+              maxLines: 1,
+              minLines: 1,
+              contextMenuBuilder: (context, editableTextState) {
+                return AdaptiveTextSelectionToolbar.buttonItems(
+                  anchors: editableTextState.contextMenuAnchors,
+                  buttonItems: <ContextMenuButtonItem>[
+                    ContextMenuButtonItem(
+                      onPressed: () {
+                        editableTextState
+                            .copySelection(SelectionChangedCause.toolbar);
+                      },
+                      type: ContextMenuButtonType.copy,
+                    ),
+                    ContextMenuButtonItem(
+                        onPressed: () {
+                          editableTextState
+                              .pasteText(SelectionChangedCause.toolbar);
+                        },
+                        type: ContextMenuButtonType.paste),
+                    ContextMenuButtonItem(
+                      onPressed: () {
+                        editableTextState
+                            .selectAll(SelectionChangedCause.toolbar);
+                      },
+                      type: ContextMenuButtonType.selectAll,
+                    ),
+                    ContextMenuButtonItem(
+                      label: 'Text to Speech',
+                      onPressed: () {
+                        _speak(_textController.text);
+                      },
+                    ),
+                  ],
+                );
+              },
+              decoration: const InputDecoration(
+                labelText: 'Title',
+                hintText: 'Write a title here...',
+                border: InputBorder.none
+              ),
             ),
             iconTheme: const IconThemeData(
                 color: Colors.yellow), // Set back arrow color
@@ -185,53 +250,11 @@ class _NoteFormState extends State<NoteForm> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  TextField(
-                    controller: _titleController,
-                    maxLines: 1,
-                    minLines: 1,
-                    contextMenuBuilder: (context, editableTextState) {
-                      return AdaptiveTextSelectionToolbar.buttonItems(
-                        anchors: editableTextState.contextMenuAnchors,
-                        buttonItems: <ContextMenuButtonItem>[
-                          ContextMenuButtonItem(
-                            onPressed: () {
-                              editableTextState
-                                  .copySelection(SelectionChangedCause.toolbar);
-                            },
-                            type: ContextMenuButtonType.copy,
-                          ),
-                          ContextMenuButtonItem(
-                              onPressed: () {
-                                editableTextState
-                                    .pasteText(SelectionChangedCause.toolbar);
-                              },
-                              type: ContextMenuButtonType.paste),
-                          ContextMenuButtonItem(
-                            onPressed: () {
-                              editableTextState
-                                  .selectAll(SelectionChangedCause.toolbar);
-                            },
-                            type: ContextMenuButtonType.selectAll,
-                          ),
-                          ContextMenuButtonItem(
-                            label: 'Text to Speech',
-                            onPressed: () {
-                              _speak(_textController.text);
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                    decoration: const InputDecoration(
-                      labelText: 'Title',
-                      labelStyle: TextStyle(color: Colors.yellow),
-                    ),
-                  ),
-                  const SizedBox(
-                      height: 8), // Added spacing between title and text fields
+                  //buildToolbar(),
+                  //SizedBox(height: 8),
                   TextField(
                     controller: _textController,
-                    maxLines: 15,
+                    maxLines: 30,
                     minLines: 1,
                     contextMenuBuilder: (context, editableTextState) {
                       return AdaptiveTextSelectionToolbar.buttonItems(
@@ -267,8 +290,8 @@ class _NoteFormState extends State<NoteForm> {
                       );
                     },
                     decoration: const InputDecoration(
-                      labelText: 'Text',
-                      labelStyle: TextStyle(color: Colors.yellow),
+                      hintText: 'Write your note here...',
+                        border: InputBorder.none
                     ),
                     keyboardType: TextInputType.multiline,
                   ),
