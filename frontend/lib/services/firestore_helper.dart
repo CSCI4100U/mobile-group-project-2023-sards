@@ -1,41 +1,49 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:kanjou/models/note.dart';
 
 class FirestoreHelper {
-  final notesCollection = FirebaseFirestore.instance.collection('notes');
+  // final userCollection = FirebaseFirestore.instance.collection('notes');
+  // get notesCollection = FirebaseFirestore.instance.collection('notes');
+  User? get user => FirebaseAuth.instance.currentUser;
+  CollectionReference get notesCollection =>
+      FirebaseFirestore.instance.doc(user!.uid).collection('data');
+
+  CollectionReference getNotesCollection() {
+    User user = FirebaseAuth.instance.currentUser!;
+    final userData = FirebaseFirestore.instance.collection('data');
+    return userData.doc(user.uid).collection('notes');
+  }
 
   Future<List<Note>> getAllNotesCloud() async {
-    final QuerySnapshot snapshot = await notesCollection.get();
-    return snapshot.docs
-        .map((doc) =>
-            Note.fromMap({...doc.data() as Map<String, dynamic>, 'id': doc.id}))
+    final notesCollection = await getNotesCollection().get();
+    return notesCollection.docs
+        .map((doc) => Note.fromMap(doc.data() as Map<String, dynamic>))
         .toList();
   }
 
   Future<void> insertNoteCloud(Note note) async {
-    Map<String,dynamic> data = note.toMap();
-    return notesCollection
+    Map<String, dynamic> data = note.toMap();
+    return getNotesCollection()
         .add(data)
-        .then((value) => print("Note Added $value"))
-        .catchError((error) => print("Failed to add note: $error"));
+        .then((value) => debugPrint("Note Added $value"))
+        .catchError((error) => debugPrint("Failed to add note: $error"));
   }
 
   Future<void> deleteNoteCloud(String referenceId) async {
-    // String toDelete = notesCollection.doc(note.reference.id).toString();
-    // print(toDelete);
-
-    return notesCollection
+    return getNotesCollection()
         .doc(referenceId)
         .delete()
-        .then((value) => print("Note Deleted "))
-        .catchError((error) => print("Failed to delete note: $error"));
+        .then((value) => debugPrint("Note Deleted "))
+        .catchError((error) => debugPrint("Failed to delete note: $error"));
   }
 
   Future updateNoteCloud(String referenceId, Note note) async {
-    return notesCollection
+    return getNotesCollection()
         .doc(referenceId)
         .update(note.toMap())
-        .then((value) => print("Note Updated"))
-        .catchError((error) => print("Failed to update note: $error"));
+        .then((value) => debugPrint("Note Updated"))
+        .catchError((error) => debugPrint("Failed to update note: $error"));
   }
 }
