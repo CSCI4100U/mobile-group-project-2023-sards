@@ -8,6 +8,7 @@ import 'package:jumping_dot/jumping_dot.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 
 class NoteForm extends StatefulWidget {
   const NoteForm({Key? key, this.noteData}) : super(key: key);
@@ -20,6 +21,7 @@ class NoteForm extends StatefulWidget {
 class _NoteFormState extends State<NoteForm> {
   late TextEditingController _titleController;
   late TextEditingController _textController;
+  QuillController _quillController = QuillController.basic();
   bool isListening = false;
   bool _speechToTextEnabled = false;
   SpeechToText speechToText = SpeechToText();
@@ -58,10 +60,12 @@ class _NoteFormState extends State<NoteForm> {
       );
     });
   }
+
   @override
   void dispose() {
     _titleController.dispose();
     _textController.dispose();
+    _quillController.dispose();
     super.dispose();
   }
 
@@ -250,50 +254,81 @@ class _NoteFormState extends State<NoteForm> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  QuillProvider(
+                    configurations: QuillConfigurations(
+                      controller: _quillController,
+                      sharedConfigurations: const QuillSharedConfigurations(
+                        locale: Locale('en'),
+                      ),
+                    ),
                   //buildToolbar(),
                   //SizedBox(height: 8),
-                  TextField(
-                    controller: _textController,
-                    maxLines: 30,
-                    minLines: 1,
-                    contextMenuBuilder: (context, editableTextState) {
-                      return AdaptiveTextSelectionToolbar.buttonItems(
-                        anchors: editableTextState.contextMenuAnchors,
-                        buttonItems: <ContextMenuButtonItem>[
-                          ContextMenuButtonItem(
-                            onPressed: () {
-                              editableTextState
-                                  .copySelection(SelectionChangedCause.toolbar);
-                            },
-                            type: ContextMenuButtonType.copy,
+                    child: Column(
+                      children: [
+                        const SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: [
+                              QuillToolbar(),
+                            ],
                           ),
-                          ContextMenuButtonItem(
-                              onPressed: () {
-                                editableTextState
-                                    .pasteText(SelectionChangedCause.toolbar);
-                              },
-                              type: ContextMenuButtonType.paste),
-                          ContextMenuButtonItem(
-                            onPressed: () {
-                              editableTextState
-                                  .selectAll(SelectionChangedCause.toolbar);
-                            },
-                            type: ContextMenuButtonType.selectAll,
+                        ),
+                        QuillEditor(
+                          configurations: const QuillEditorConfigurations(
+                            readOnly: false,
+                            expands: false,
+                            padding: EdgeInsets.all(8),
+                            placeholder: 'Write your note here...',
+                            autoFocus: false,
                           ),
-                          ContextMenuButtonItem(
-                            label: 'Text to Speech',
-                            onPressed: () {
-                              _speak(_textController.text);
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                    decoration: const InputDecoration(
-                      hintText: 'Write your note here...',
-                        border: InputBorder.none
-                    ),
-                    keyboardType: TextInputType.multiline,
+                          focusNode: FocusNode(),
+                          scrollController: ScrollController(),
+                        ),
+                        // TextField(
+                        //   controller: _textController,
+                        //   maxLines: 30,
+                        //   minLines: 1,
+                        //   contextMenuBuilder: (context, editableTextState) {
+                        //     return AdaptiveTextSelectionToolbar.buttonItems(
+                        //       anchors: editableTextState.contextMenuAnchors,
+                        //       buttonItems: <ContextMenuButtonItem>[
+                        //         ContextMenuButtonItem(
+                        //           onPressed: () {
+                        //             editableTextState
+                        //                 .copySelection(SelectionChangedCause.toolbar);
+                        //           },
+                        //           type: ContextMenuButtonType.copy,
+                        //         ),
+                        //         ContextMenuButtonItem(
+                        //             onPressed: () {
+                        //               editableTextState
+                        //                   .pasteText(SelectionChangedCause.toolbar);
+                        //             },
+                        //             type: ContextMenuButtonType.paste),
+                        //         ContextMenuButtonItem(
+                        //           onPressed: () {
+                        //             editableTextState
+                        //                 .selectAll(SelectionChangedCause.toolbar);
+                        //           },
+                        //           type: ContextMenuButtonType.selectAll,
+                        //         ),
+                        //         ContextMenuButtonItem(
+                        //           label: 'Text to Speech',
+                        //           onPressed: () {
+                        //             _speak(_textController.text);
+                        //           },
+                        //         ),
+                        //       ],
+                        //     );
+                        //   },
+                        //   decoration: const InputDecoration(
+                        //     hintText: 'Write your note here...',
+                        //       border: InputBorder.none
+                        //   ),
+                        //   keyboardType: TextInputType.multiline,
+                        // ),
+                      ],
+                    )
                   ),
                   const SizedBox(height: 16),
                 ],
