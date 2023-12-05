@@ -1,7 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:kanjou/theme/theme_manager.dart';
 import '../providers/settings_provider.dart';
 import '../services/sync.dart';
 
@@ -15,6 +14,7 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
+    final themeManager = Provider.of<ThemeManager>(context);
     SettingsProvider providerSettings = Provider.of<SettingsProvider>(context);
     return Scaffold(
       appBar: AppBar(
@@ -87,7 +87,7 @@ class _SettingsPageState extends State<SettingsPage> {
               value: providerSettings.lightmode,
               onChanged: (bool value) {
                 providerSettings.lightmode = value;
-                // Add switch to light mode function
+                themeManager.toggleTheme(); // Toggle the theme here
               },
               title: const Text(
                 "Light Mode",

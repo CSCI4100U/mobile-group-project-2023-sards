@@ -10,7 +10,7 @@ class NoteCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-        color: const Color.fromARGB(255, 23, 23, 23),
+        //color: const Color.fromARGB(255, 23, 23, 23),
         child: Stack(children: [
           Padding(
             padding: const EdgeInsets.all(13.0),
@@ -22,7 +22,7 @@ class NoteCard extends StatelessWidget {
                   note.tag != null ? note.tag! : "No tag",
                   maxLines: 1,
                   style: const TextStyle(
-                    color: Colors.white,
+                    //color: Colors.white,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -33,7 +33,7 @@ class NoteCard extends StatelessWidget {
                     note.title,
                     maxLines: 1,
                     style: const TextStyle(
-                      color: Colors.white,
+                      //color: Colors.white,
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
