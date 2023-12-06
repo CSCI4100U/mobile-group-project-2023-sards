@@ -26,7 +26,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 Navigator.pop(context, true);
               },
               tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
-              color: Colors.yellow,
+              color: const Color(0xFFE7D434)
             );
           },
         ),
@@ -56,7 +56,7 @@ class _SettingsPageState extends State<SettingsPage> {
               controlAffinity: ListTileControlAffinity.trailing,
               contentPadding:
                   const EdgeInsetsDirectional.fromSTEB(24, 12, 24, 12),
-              activeColor: const Color(0xFFFFEB3B),
+              activeColor: const Color(0xFFE7D434),
             ),
           ),
           Padding(
@@ -78,7 +78,7 @@ class _SettingsPageState extends State<SettingsPage> {
               controlAffinity: ListTileControlAffinity.trailing,
               contentPadding:
                   const EdgeInsetsDirectional.fromSTEB(24, 12, 24, 12),
-              activeColor:  const Color(0xFFFFEB3B),
+              activeColor:  const Color(0xFFE7D434),
             ),
           ),
           Padding(
@@ -97,7 +97,7 @@ class _SettingsPageState extends State<SettingsPage> {
               controlAffinity: ListTileControlAffinity.trailing,
               contentPadding:
                   const EdgeInsetsDirectional.fromSTEB(24, 12, 24, 12),
-              activeColor: const Color(0xFFFFEB3B),
+              activeColor: const Color(0xFFE7D434),
             ),
           ),
           Padding(
@@ -109,9 +109,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 });
               },
               style: ElevatedButton.styleFrom(
-                // Add theme color and font later
                 fixedSize: const Size.fromHeight(50),
-                backgroundColor: const Color(0xFFFFEB3B),
+                backgroundColor: const Color(0xFFE7D434),
                 onPrimary: const Color(0xFF000000),
               ),
               child: const Text(

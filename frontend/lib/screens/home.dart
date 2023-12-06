@@ -66,7 +66,7 @@ class _HomePageState extends State<HomePage> {
               if (noteMap != null) {
                 await notesProvider.updateNote(noteMap, index).then((val) {
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text("Note successfully updated")));
+                      content: Text("Note successfully updated", style: TextStyle(color: Colors.black))));
                 });
               }
             });
@@ -119,7 +119,7 @@ class _HomePageState extends State<HomePage> {
                   if (noteMap != null) {
                     await notesProvider.updateNote(noteMap, index).then((val) {
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text("Note successfully updated")));
+                          content: Text("Note successfully updated", style: TextStyle(color: Colors.black))));
                     });
                   }
                 },
@@ -155,8 +155,8 @@ class _HomePageState extends State<HomePage> {
           notesProvider.insertNote(returnedMap);
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-                content: Text('Note successfully saved'),
-                backgroundColor: Colors.yellow),
+                content: Text('Note successfully saved', style: TextStyle(color: Colors.black)),
+                backgroundColor: Color(0xFFE7D434)),
           );
           if (providerSettings.sync) {
             Sync.uploadToCloud(context);
@@ -165,8 +165,8 @@ class _HomePageState extends State<HomePage> {
           // Show a little notification on the bottom saying that the note was not added
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('The note was not saved'),
-              backgroundColor: Colors.yellow,
+              content: Text('The note was not saved', style: TextStyle(color: Colors.black)),
+              backgroundColor: Color(0xFFE7D434),
             ),
           );
         }
@@ -181,7 +181,7 @@ class _HomePageState extends State<HomePage> {
           onPressed: () {
             scaffoldKey.currentState!.openDrawer();
           },
-          color: Colors.yellow,
+          color: Color(0xFFE7D434),
           tooltip: 'User Information',
         )),
         title: _buildSearchField(notesProvider),
@@ -198,7 +198,7 @@ class _HomePageState extends State<HomePage> {
                         builder: (context) => const SettingsPage()));
               },
               icon: const Icon(Icons.settings),
-              color: Colors.yellow,
+              color: Color(0xFFE7D434),
               tooltip: 'Settings',
             )),
           ),
@@ -248,7 +248,7 @@ class _HomePageState extends State<HomePage> {
                               ],
                             ));
                   },
-            backgroundColor: Colors.yellow,
+            backgroundColor: Color(0xFFE7D434),
             child: Icon(_isSelectMode ? Icons.delete : Icons.edit_note_sharp,
                 color: const Color.fromARGB(255, 0, 0, 0)),
           ),
