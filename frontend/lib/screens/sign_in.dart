@@ -42,7 +42,7 @@ class _SignInState extends State<SignIn> {
                     style: TextStyle(
                       fontSize: 36,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      // color: Colors.white,
                     ),
                   ),
                   SizedBox(height: 10),
@@ -50,7 +50,7 @@ class _SignInState extends State<SignIn> {
                     'Please sign in to continue',
                     style: TextStyle(
                       fontSize: 16,
-                      color: Colors.yellow,
+                      // color: Colors.yellow,
                     ),
                   ),
                 ],
@@ -101,7 +101,7 @@ class _SignInState extends State<SignIn> {
                 'More Sign-In Options Coming Soon',
                 style: TextStyle(
                   fontSize: 14,
-                  color: Colors.yellow,
+                  // color: Colors.yellow,
                 ),
               ),
             ),

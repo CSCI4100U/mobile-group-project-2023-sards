@@ -106,17 +106,18 @@ class _NoteFormState extends State<NoteForm> {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Row(
               children: [
-                const Text('Listening'),
+                const Text('Listening', style: TextStyle(color: Colors.black),),
                 const SizedBox(width: 0.5),
                 JumpingDots(
-                  color: Colors.black38,
+                  color: Colors.black,
                   radius: 5,
                   numberOfDots: 3,
                   animationDuration: const Duration(milliseconds: 200),
                 )
               ],
             ),
-            backgroundColor: const Color(0xFFFFEB3B)));
+            backgroundColor: const Color(0xFFE7D434))
+        );
         speechToText.listen(onResult: onSpeechResult);
       } else {
         speechToText.stop();
@@ -124,7 +125,7 @@ class _NoteFormState extends State<NoteForm> {
           isListening = false;
         });
         ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Stopped Listening')));
+            .showSnackBar(const SnackBar(content: Text('Stopped Listening', style: TextStyle(color: Colors.black))));
       }
     } else {
       speechToText.initialize().then((value) {
@@ -136,7 +137,7 @@ class _NoteFormState extends State<NoteForm> {
         } else {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
               content: Text(
-                  'Speech to text is not enabled on this device. Please try again later.')));
+                  'Speech to text is not enabled on this device. Please try again later.', style: TextStyle(color: Colors.black))));
         }
       }, onError: (stackTrace) {
         debugPrint('Error initializing speech to text: $stackTrace');
@@ -219,7 +220,7 @@ class _NoteFormState extends State<NoteForm> {
               ),
             ),
             iconTheme: const IconThemeData(
-                color: Colors.yellow), // Set back arrow color
+                color: Color(0xFFE7D434)),
             actions: [
               IconButton(
                 onPressed: () async {
@@ -230,7 +231,7 @@ class _NoteFormState extends State<NoteForm> {
                 },
                 icon: const Icon(
                   Icons.document_scanner_outlined,
-                  color: Colors.yellow,
+                  color: Color(0xFFE7D434),
                 ),
               ),
               IconButton(
@@ -239,7 +240,7 @@ class _NoteFormState extends State<NoteForm> {
                 },
                 icon: const Icon(
                   Icons.mic,
-                  color: Colors.yellow,
+                  color: Color(0xFFE7D434),
                 ),
               ),
             ],
@@ -309,7 +310,7 @@ class _NoteFormState extends State<NoteForm> {
                 'text': _textController.text,
               });
             },
-            backgroundColor: Colors.yellow, // Set button color
+            backgroundColor: Color(0xFFE7D434), // Set button color
             shape: RoundedRectangleBorder(
               borderRadius:
                   BorderRadius.circular(10), // Set button border radius
@@ -322,17 +323,30 @@ class _NoteFormState extends State<NoteForm> {
           await showDialog(
               context: context,
               builder: (_) => AlertDialog(
-                    title: const Text('Leave without saving changes?'),
+                backgroundColor: const Color(0xFFB4A327),
+                    title: const Text('Leave without saving changes?',
+                        style: TextStyle(color: Colors.black)),
                     actions: [
                       ElevatedButton(
                           onPressed: () {
                             willLeave = true;
                             Navigator.of(context).pop();
                           },
-                          child: const Text('Yes')),
+                          style: ElevatedButton.styleFrom(
+                            primary: const Color(0xFFE7CB2F),
+                          ),
+                          child: const Text('Yes',
+                              style: TextStyle(color: Colors.black)
+                          )
+                      ),
                       TextButton(
                           onPressed: () => Navigator.of(context).pop(),
-                          child: const Text('No'))
+                          style: TextButton.styleFrom(
+                            primary: const Color(0xFFE7CB2F),
+                          ),
+                          child: const Text('No',
+                          style: TextStyle(color: Colors.black),)
+                      )
                     ],
                   ));
           return willLeave;

@@ -1,7 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:kanjou/theme/theme_manager.dart';
 import '../providers/settings_provider.dart';
 import '../services/sync.dart';
 
@@ -15,6 +14,7 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
+    final themeManager = Provider.of<ThemeManager>(context);
     SettingsProvider providerSettings = Provider.of<SettingsProvider>(context);
     return Scaffold(
       appBar: AppBar(
@@ -26,7 +26,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 Navigator.pop(context, true);
               },
               tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
-              color: Colors.yellow,
+              color: const Color(0xFFE7D434)
             );
           },
         ),
@@ -56,7 +56,7 @@ class _SettingsPageState extends State<SettingsPage> {
               controlAffinity: ListTileControlAffinity.trailing,
               contentPadding:
                   const EdgeInsetsDirectional.fromSTEB(24, 12, 24, 12),
-              activeColor: const Color(0xFFFFEB3B),
+              activeColor: const Color(0xFFE7D434),
             ),
           ),
           Padding(
@@ -78,7 +78,7 @@ class _SettingsPageState extends State<SettingsPage> {
               controlAffinity: ListTileControlAffinity.trailing,
               contentPadding:
                   const EdgeInsetsDirectional.fromSTEB(24, 12, 24, 12),
-              activeColor:  const Color(0xFFFFEB3B),
+              activeColor:  const Color(0xFFE7D434),
             ),
           ),
           Padding(
@@ -87,7 +87,7 @@ class _SettingsPageState extends State<SettingsPage> {
               value: providerSettings.lightmode,
               onChanged: (bool value) {
                 providerSettings.lightmode = value;
-                // Add switch to light mode function
+                themeManager.toggleTheme(); // Toggle the theme here
               },
               title: const Text(
                 "Light Mode",
@@ -97,7 +97,7 @@ class _SettingsPageState extends State<SettingsPage> {
               controlAffinity: ListTileControlAffinity.trailing,
               contentPadding:
                   const EdgeInsetsDirectional.fromSTEB(24, 12, 24, 12),
-              activeColor: const Color(0xFFFFEB3B),
+              activeColor: const Color(0xFFE7D434),
             ),
           ),
           Padding(
@@ -109,9 +109,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 });
               },
               style: ElevatedButton.styleFrom(
-                // Add theme color and font later
                 fixedSize: const Size.fromHeight(50),
-                backgroundColor: const Color(0xFFFFEB3B),
+                backgroundColor: const Color(0xFFE7D434),
                 onPrimary: const Color(0xFF000000),
               ),
               child: const Text(
