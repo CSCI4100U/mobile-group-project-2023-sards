@@ -1,18 +1,15 @@
 import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:kanjou/models/note.dart';
 import 'package:kanjou/screens/create_note.dart';
 import 'package:kanjou/widgets/custom_drawer.dart';
 import 'package:kanjou/screens/settings_page.dart';
-import 'package:kanjou/screens/sign_in.dart';
 import 'package:kanjou/providers/settings_provider.dart';
 import 'package:kanjou/providers/note_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:kanjou/services/sync.dart';
 import 'package:kanjou/utilities/fuzzy_search.dart';
-
 import 'package:kanjou/widgets/note_card.dart';
 
 Transform makeBigger(IconButton icon) {
@@ -192,7 +189,7 @@ class _HomePageState extends State<HomePage> {
           const SizedBox(width: 2),
           Padding(
             padding: const EdgeInsets.symmetric(
-                horizontal: 16.0), // Add padding here
+                horizontal: 16.0),
             child: makeBigger(IconButton(
               onPressed: () {
                 Navigator.push(
