@@ -260,12 +260,19 @@ class _NoteFormState extends State<NoteForm> {
                       ),
                       child: Column(
                         children: [
-                          const SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: [
-                                QuillToolbar(),
-                              ],
+                          Container(
+                            decoration: const BoxDecoration(border: Border.symmetric(vertical: BorderSide(color: Colors.yellow,width: 2.0))),
+                            child: const SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: [
+                                  QuillToolbar(
+                                    configurations: QuillToolbarConfigurations(
+
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                           QuillEditor(
