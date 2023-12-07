@@ -5,7 +5,6 @@ import 'package:kanjou/utilities/quill_document_conversion.dart';
 import 'package:kanjou/models/note.dart';
 import 'package:kanjou/screens/create_note.dart';
 import 'package:kanjou/widgets/custom_drawer.dart';
-import 'package:kanjou/screens/settings_page.dart';
 import 'package:kanjou/providers/settings_provider.dart';
 import 'package:kanjou/providers/note_provider.dart';
 import 'package:provider/provider.dart';
@@ -210,22 +209,8 @@ class _HomePageState extends State<HomePage> {
             tooltip: 'User Information',
           )),
           title: _buildSearchField(notesProvider),
-          actions: <Widget>[
-            const SizedBox(width: 2),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: makeBigger(IconButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const SettingsPage()));
-                },
-                icon: const Icon(Icons.settings),
-                color: const Color(0xFFE7D434),
-                tooltip: 'Settings',
-              )),
-            ),
+          actions: const <Widget>[
+            SizedBox(width: 2),
           ],
         ),
         body: Padding(
