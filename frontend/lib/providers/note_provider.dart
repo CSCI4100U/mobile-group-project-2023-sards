@@ -12,7 +12,7 @@ import 'package:kanjou/services/firestore_helper.dart';
 import 'package:uuid/uuid.dart';
 
 var url =
-    "https://notesaimobile.azurewebsites.net/api/categorize_note"; // URL of the server
+    "http://15.157.7.182:3003/api/categorize_note";
 
 class NotesProvider extends ChangeNotifier {
   final localDb = DatabaseHelper();
@@ -43,7 +43,7 @@ class NotesProvider extends ChangeNotifier {
           headers: {"Content-Type": "application/json"}, body: jsonBody);
       if (response.statusCode == 200) {
         var categoryJson = jsonDecode(response.body);
-        String category = categoryJson["category"][0].toString();
+        String category = categoryJson["category"].toString();
         Note newNote = Note.fromMap({...note.toMap(), 'tag': category});
         notes[i] = newNote;
         notifyListeners();
