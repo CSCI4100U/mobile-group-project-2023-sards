@@ -50,7 +50,6 @@ class _HomePageState extends State<HomePage> {
       // print(results.length);
       // Make a list based on the results list
       List<Note> results = fuzzySearch(controller.text, notesProvider);
-
       return List<Widget>.generate(results.length, (int index) {
         return ListTile(
             title: Text(results[index].title),
@@ -66,7 +65,8 @@ class _HomePageState extends State<HomePage> {
               if (noteMap != null) {
                 await notesProvider.updateNote(noteMap, index).then((val) {
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text("Note successfully updated", style: TextStyle(color: Colors.black))));
+                      content: Text("Note successfully updated",
+                          style: TextStyle(color: Colors.black))));
                 });
               }
             });
@@ -89,51 +89,62 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildListOfNotes(NotesProvider notesProvider) {
-    return MasonryGridView.count(
-      padding: EdgeInsets.zero,
-      shrinkWrap: true,
-      scrollDirection: Axis.vertical,
-      crossAxisCount: 2,
-      mainAxisSpacing: 3,
-      crossAxisSpacing: 4,
-      itemCount: notesProvider.notes.length,
-      itemBuilder: (context, index) {
-        final note = notesProvider.notes[index];
-        return GestureDetector(
-          onTap: _isSelectMode
-              ? () {
-                  setState(() {
-                    if (!selectedNoteIndexes.add(index)) {
-                      selectedNoteIndexes.remove(index);
-                    }
-                  });
-                }
-              : () async {
-                  Map<String, dynamic>? noteMap = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => NoteForm(
-                                // speechToText: _speechToText,
-                                noteData: note.toMap(),
-                              )));
-                  if (noteMap != null) {
-                    await notesProvider.updateNote(noteMap, index).then((val) {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text("Note successfully updated", style: TextStyle(color: Colors.black))));
+    return RefreshIndicator(
+      onRefresh: () async => await _pullRefresh(notesProvider),
+      child: MasonryGridView.count(
+        padding: EdgeInsets.zero,
+        shrinkWrap: true,
+        scrollDirection: Axis.vertical,
+        crossAxisCount: 2,
+        mainAxisSpacing: 3,
+        crossAxisSpacing: 4,
+        itemCount: notesProvider.notes.length,
+        itemBuilder: (context, index) {
+          final note = notesProvider.notes[index];
+          return GestureDetector(
+            onTap: _isSelectMode
+                ? () {
+                    setState(() {
+                      if (!selectedNoteIndexes.add(index)) {
+                        selectedNoteIndexes.remove(index);
+                      }
                     });
                   }
-                },
-          onLongPress: () {
-            toggleSelectMode(index: index);
-          },
-          child: NoteCard(
-            note: note,
-            isSelected:
-                !_isSelectMode ? null : selectedNoteIndexes.contains(index),
-          ),
-        );
-      },
+                : () async {
+                    Map<String, dynamic>? noteMap = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => NoteForm(
+                                  // speechToText: _speechToText,
+                                  noteData: note.toMap(),
+                                )));
+                    if (noteMap != null) {
+                      await notesProvider
+                          .updateNote(noteMap, index)
+                          .then((val) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text("Note successfully updated",
+                                    style: TextStyle(color: Colors.black))));
+                      });
+                    }
+                  },
+            onLongPress: () {
+              toggleSelectMode(index: index);
+            },
+            child: NoteCard(
+              note: note,
+              isSelected:
+                  !_isSelectMode ? null : selectedNoteIndexes.contains(index),
+            ),
+          );
+        },
+      ),
     );
+  }
+
+  Future<void> _pullRefresh(NotesProvider notesProvider) async {
+    await notesProvider.refresh();
   }
 
   @override
@@ -155,7 +166,8 @@ class _HomePageState extends State<HomePage> {
           notesProvider.insertNote(returnedMap);
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-                content: Text('Note successfully saved', style: TextStyle(color: Colors.black)),
+                content: Text('Note successfully saved',
+                    style: TextStyle(color: Colors.black)),
                 backgroundColor: Color(0xFFE7D434)),
           );
           if (providerSettings.sync) {
@@ -165,7 +177,8 @@ class _HomePageState extends State<HomePage> {
           // Show a little notification on the bottom saying that the note was not added
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('The note was not saved', style: TextStyle(color: Colors.black)),
+              content: Text('The note was not saved',
+                  style: TextStyle(color: Colors.black)),
               backgroundColor: Color(0xFFE7D434),
             ),
           );
@@ -188,8 +201,7 @@ class _HomePageState extends State<HomePage> {
         actions: <Widget>[
           const SizedBox(width: 2),
           Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: makeBigger(IconButton(
               onPressed: () {
                 Navigator.push(
@@ -230,7 +242,10 @@ class _HomePageState extends State<HomePage> {
                                 ElevatedButton(
                                     onPressed: () {
                                       (() async {
-                                        List<Note> targets = selectedNoteIndexes.map((int i)=>notesProvider.notes[i]).toList();
+                                        List<Note> targets = selectedNoteIndexes
+                                            .map((int i) =>
+                                                notesProvider.notes[i])
+                                            .toList();
                                         for (Note note in targets) {
                                           notesProvider.deleteNote(note);
                                         }
