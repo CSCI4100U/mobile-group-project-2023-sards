@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tesseract_ocr/flutter_tesseract_ocr.dart';
@@ -18,7 +20,6 @@ class NoteForm extends StatefulWidget {
 
 class _NoteFormState extends State<NoteForm> {
   late TextEditingController _titleController;
-  late TextEditingController _textController;
   final QuillController _quillController = QuillController.basic();
   bool isListening = false;
   bool _speechToTextEnabled = false;
@@ -31,41 +32,19 @@ class _NoteFormState extends State<NoteForm> {
     super.initState();
     _titleController =
         TextEditingController(text: widget.noteData?['title'] ?? "");
-    _textController =
-        TextEditingController(text: widget.noteData?['text'] ?? "");
+    try{
+      _quillController.document =
+          Document.fromJson(jsonDecode(widget.noteData?['text']));
+    } catch(e){
+      _quillController.document = Document();
+    }
     _initTts();
     //_textStyle = TextStyle(); // Initialize with default style
-  }
-
-  void applyFormatting({bool bold = false, bool italic = false}) {
-    final currentSelection = _textController.selection;
-    final currentText = _textController.text;
-    final selectedText = currentSelection.textInside(currentText);
-
-    final formattedText = bold
-        ? selectedText
-        : italic
-            ? '*$selectedText*'
-            : selectedText;
-
-    final newText = currentText.replaceRange(
-      currentSelection.start,
-      currentSelection.end,
-      formattedText,
-    );
-
-    setState(() {
-      _textController.text = newText;
-      _textController.selection = TextSelection.collapsed(
-        offset: currentSelection.start + formattedText.length,
-      );
-    });
   }
 
   @override
   void dispose() {
     _titleController.dispose();
-    _textController.dispose();
     _quillController.dispose();
     super.dispose();
   }
@@ -83,7 +62,9 @@ class _NoteFormState extends State<NoteForm> {
   void onSpeechResult(SpeechRecognitionResult result) {
     setState(() {
       isListening = true;
-      _textController.text += result.recognizedWords;
+      _quillController.document
+          .insert(_quillController.document.length - 1, result.recognizedWords);
+      // _textController.text += result.recognizedWords;
     });
   }
 
@@ -154,31 +135,6 @@ class _NoteFormState extends State<NoteForm> {
     }
   }
 
-  Widget buildToolbar() {
-    return Container(
-      padding: const EdgeInsets.all(8.0),
-      color: Colors.grey[200], // Background color of the toolbar
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          IconButton(
-            icon: const Icon(Icons.format_bold),
-            onPressed: () {
-              // Apply bold formatting to the selected text
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.format_italic),
-            onPressed: () {
-              // Apply italic formatting to the selected text
-            },
-          ),
-          // Add more buttons for other formatting options as needed
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -206,13 +162,6 @@ class _NoteFormState extends State<NoteForm> {
           if (willPop ?? false) {
             navigator.pop();
           }
-          // Navigator.pop(context, {
-          //   ...widget.noteData ??
-          //       {}, // Append the prefilled data from the widget
-          //   'title': _titleController.text,
-          //   'text': _textController.text,
-          // });
-          // return true;
         },
         child: Scaffold(
           appBar: AppBar(
@@ -247,7 +196,7 @@ class _NoteFormState extends State<NoteForm> {
                     ContextMenuButtonItem(
                       label: 'Text to Speech',
                       onPressed: () {
-                        _speak(_textController.text);
+                        _speak(_quillController.document.toPlainText());
                       },
                     ),
                   ],
@@ -261,11 +210,13 @@ class _NoteFormState extends State<NoteForm> {
             iconTheme: const IconThemeData(color: Color(0xFFE7D434)),
             actions: [
               IconButton(
+                tooltip: "Extract text from image",
                 onPressed: () async {
                   var imagePath = await pickImageFromGallery();
                   String text =
                       await FlutterTesseractOcr.extractText(imagePath);
-                  _textController.text += text;
+                  _quillController.document
+                      .insert(_quillController.document.length - 1, text);
                 },
                 icon: const Icon(
                   Icons.document_scanner_outlined,
@@ -273,6 +224,7 @@ class _NoteFormState extends State<NoteForm> {
                 ),
               ),
               IconButton(
+                tooltip: "Speech-to-text",
                 onPressed: () {
                   listenToSpeech(context);
                 },
@@ -296,8 +248,6 @@ class _NoteFormState extends State<NoteForm> {
                           locale: Locale('en'),
                         ),
                       ),
-                      //buildToolbar(),
-                      //SizedBox(height: 8),
                       child: Column(
                         children: [
                           const SingleChildScrollView(
@@ -319,49 +269,6 @@ class _NoteFormState extends State<NoteForm> {
                             focusNode: FocusNode(),
                             scrollController: ScrollController(),
                           ),
-                          // TextField(
-                          //   controller: _textController,
-                          //   maxLines: 30,
-                          //   minLines: 1,
-                          //   contextMenuBuilder: (context, editableTextState) {
-                          //     return AdaptiveTextSelectionToolbar.buttonItems(
-                          //       anchors: editableTextState.contextMenuAnchors,
-                          //       buttonItems: <ContextMenuButtonItem>[
-                          //         ContextMenuButtonItem(
-                          //           onPressed: () {
-                          //             editableTextState
-                          //                 .copySelection(SelectionChangedCause.toolbar);
-                          //           },
-                          //           type: ContextMenuButtonType.copy,
-                          //         ),
-                          //         ContextMenuButtonItem(
-                          //             onPressed: () {
-                          //               editableTextState
-                          //                   .pasteText(SelectionChangedCause.toolbar);
-                          //             },
-                          //             type: ContextMenuButtonType.paste),
-                          //         ContextMenuButtonItem(
-                          //           onPressed: () {
-                          //             editableTextState
-                          //                 .selectAll(SelectionChangedCause.toolbar);
-                          //           },
-                          //           type: ContextMenuButtonType.selectAll,
-                          //         ),
-                          //         ContextMenuButtonItem(
-                          //           label: 'Text to Speech',
-                          //           onPressed: () {
-                          //             _speak(_textController.text);
-                          //           },
-                          //         ),
-                          //       ],
-                          //     );
-                          //   },
-                          //   decoration: const InputDecoration(
-                          //     hintText: 'Write your note here...',
-                          //       border: InputBorder.none
-                          //   ),
-                          //   keyboardType: TextInputType.multiline,
-                          // ),
                         ],
                       )),
                   const SizedBox(height: 16),
@@ -375,10 +282,11 @@ class _NoteFormState extends State<NoteForm> {
               Navigator.pop(context, {
                 ...widget.noteData ?? {},
                 'title': _titleController.text,
-                'text': _textController.text,
+                'text':
+                    jsonEncode(_quillController.document.toDelta().toJson()),
               });
             },
-            backgroundColor: Color(0xFFE7D434), // Set button color
+            backgroundColor: const Color(0xFFE7D434), // Set button color
             shape: RoundedRectangleBorder(
               borderRadius:
                   BorderRadius.circular(10), // Set button border radius

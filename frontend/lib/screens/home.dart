@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:kanjou/utilities/quill_document_conversion.dart';
 import 'package:kanjou/models/note.dart';
 import 'package:kanjou/screens/create_note.dart';
 import 'package:kanjou/widgets/custom_drawer.dart';
@@ -51,9 +52,10 @@ class _HomePageState extends State<HomePage> {
       // Make a list based on the results list
       List<Note> results = fuzzySearch(controller.text, notesProvider);
       return List<Widget>.generate(results.length, (int index) {
+        String noteText = deltaJsonToString(results[index].text);
         return ListTile(
             title: Text(results[index].title),
-            subtitle: Text(results[index].text),
+            subtitle: Text(noteText),
             onTap: () async {
               controller.closeView("");
               Map<String, dynamic>? noteMap = await Navigator.push(
@@ -161,8 +163,10 @@ class _HomePageState extends State<HomePage> {
         // Check if the returned map has the title value or text value empty
         if (returnedMap != null &&
             returnedMap.isNotEmpty &&
-            returnedMap['title'] != "" &&
             returnedMap['text'] != "") {
+          if (returnedMap['title'] == null || returnedMap['title'] == "") {
+            returnedMap['title'] = 'Untitled';
+          }
           notesProvider.insertNote(returnedMap);
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -186,90 +190,100 @@ class _HomePageState extends State<HomePage> {
       });
     }
 
-    return Scaffold(
-      key: scaffoldKey,
-      appBar: AppBar(
-        leading: makeBigger(IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () {
-            scaffoldKey.currentState!.openDrawer();
-          },
-          color: Color(0xFFE7D434),
-          tooltip: 'User Information',
-        )),
-        title: _buildSearchField(notesProvider),
-        actions: <Widget>[
-          const SizedBox(width: 2),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: makeBigger(IconButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const SettingsPage()));
-              },
-              icon: const Icon(Icons.settings),
-              color: Color(0xFFE7D434),
-              tooltip: 'Settings',
-            )),
-          ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Expanded(child: _buildListOfNotes(notesProvider)),
+    return PopScope(
+      canPop: !_isSelectMode,
+      onPopInvoked: (bool didPop) {
+        if (didPop) {
+          return;
+        }
+        toggleSelectMode();
+      },
+      child: Scaffold(
+        key: scaffoldKey,
+        appBar: AppBar(
+          leading: makeBigger(IconButton(
+            icon: const Icon(Icons.menu),
+            onPressed: () {
+              scaffoldKey.currentState!.openDrawer();
+            },
+            color: const Color(0xFFE7D434),
+            tooltip: 'User Information',
+          )),
+          title: _buildSearchField(notesProvider),
+          actions: <Widget>[
+            const SizedBox(width: 2),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: makeBigger(IconButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SettingsPage()));
+                },
+                icon: const Icon(Icons.settings),
+                color: const Color(0xFFE7D434),
+                tooltip: 'Settings',
+              )),
+            ),
           ],
         ),
-      ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Transform.scale(
-          scale: 1.2, // Increase the size
-          child: FloatingActionButton(
-            tooltip: 'Add a Note',
-            onPressed: !_isSelectMode
-                ? addNote
-                : () async {
-                    await showDialog(
-                        context: context,
-                        builder: (_) => AlertDialog(
-                              title: const Text('Delete selected notes?'),
-                              actions: [
-                                ElevatedButton(
-                                    onPressed: () {
-                                      (() async {
-                                        List<Note> targets = selectedNoteIndexes
-                                            .map((int i) =>
-                                                notesProvider.notes[i])
-                                            .toList();
-                                        for (Note note in targets) {
-                                          notesProvider.deleteNote(note);
-                                        }
-                                      })()
-                                          .then((res) {
-                                        toggleSelectMode();
-                                        Navigator.of(context).pop();
-                                      });
-                                    },
-                                    child: const Text('Delete')),
-                                TextButton(
-                                    onPressed: () =>
-                                        Navigator.of(context).pop(),
-                                    child: const Text('Cancel'))
-                              ],
-                            ));
-                  },
-            backgroundColor: Color(0xFFE7D434),
-            child: Icon(_isSelectMode ? Icons.delete : Icons.edit_note_sharp,
-                color: const Color.fromARGB(255, 0, 0, 0)),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Expanded(child: _buildListOfNotes(notesProvider)),
+            ],
           ),
         ),
+        floatingActionButton: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Transform.scale(
+            scale: 1.2, // Increase the size
+            child: FloatingActionButton(
+              tooltip: 'Add a Note',
+              onPressed: !_isSelectMode
+                  ? addNote
+                  : () async {
+                      await showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                                title: const Text('Delete selected notes?'),
+                                actions: [
+                                  ElevatedButton(
+                                      onPressed: () {
+                                        (() async {
+                                          List<Note> targets =
+                                              selectedNoteIndexes
+                                                  .map((int i) =>
+                                                      notesProvider.notes[i])
+                                                  .toList();
+                                          for (Note note in targets) {
+                                            notesProvider.deleteNote(note);
+                                          }
+                                        })()
+                                            .then((res) {
+                                          toggleSelectMode();
+                                          Navigator.of(context).pop();
+                                        });
+                                      },
+                                      child: const Text('Delete')),
+                                  TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(),
+                                      child: const Text('Cancel'))
+                                ],
+                              ));
+                    },
+              backgroundColor: const Color(0xFFE7D434),
+              child: Icon(_isSelectMode ? Icons.delete : Icons.edit_note_sharp,
+                  color: const Color.fromARGB(255, 0, 0, 0)),
+            ),
+          ),
+        ),
+        drawer: const CustomDrawer(),
       ),
-      drawer: const CustomDrawer(),
     );
   }
 }

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:kanjou/models/note.dart';
 import 'package:kanjou/utilities/date_conversion.dart';
+import 'package:kanjou/utilities/quill_document_conversion.dart';
 
 class NoteCard extends StatelessWidget {
-  Note note;
-  bool? isSelected;
-  NoteCard({required this.note, this.isSelected, super.key});
+  final Note note;
+  final bool? isSelected;
+  const NoteCard({required this.note, this.isSelected, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +54,7 @@ class NoteCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  note.text,
+                  deltaJsonToString(note.text),
                   maxLines: 8,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
