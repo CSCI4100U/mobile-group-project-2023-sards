@@ -1,17 +1,11 @@
-import 'dart:io';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:kanjou/services/database_helper.dart';
-
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 
 class Note {
   String title;
-  String text; // Change this to raw bytes
+  String text;
   String id;
   String date;
   String? tag;
-  // final DocumentReference reference;
 
   Note(
       {required this.title,

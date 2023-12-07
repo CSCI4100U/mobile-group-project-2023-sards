@@ -21,7 +21,7 @@ class DatabaseHelper {
           CREATE TABLE notes(
             id TEXT PRIMARY KEY NOT NULL,
             title TEXT NOT NULL,
-            text TEXT NOT NULL,
+            text JSON NOT NULL,
             date TEXT NOT NULL,
             tag TEXT
           )
