@@ -198,22 +198,8 @@ class _HomePageState extends State<HomePage> {
           tooltip: 'User Information',
         )),
         title: _buildSearchField(notesProvider),
-        actions: <Widget>[
-          const SizedBox(width: 2),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: makeBigger(IconButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const SettingsPage()));
-              },
-              icon: const Icon(Icons.settings),
-              color: Color(0xFFE7D434),
-              tooltip: 'Settings',
-            )),
-          ),
+        actions: const <Widget>[
+          SizedBox(width: 2),
         ],
       ),
       body: Padding(

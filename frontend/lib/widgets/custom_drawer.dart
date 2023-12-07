@@ -20,105 +20,48 @@ class _CustomDrawerState extends State<CustomDrawer> {
     super.initState();
   }
 
-  Widget signedInWidgets(BuildContext context, User? user) {
-    if (user == null) {
-      return const SizedBox.shrink();
-    }
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Padding(
-          padding: EdgeInsets.only(left: 15.0, right: 15.0, bottom: 20.0),
-          child: Divider(color: Color.fromARGB(255, 101, 101, 101)),
-        ),
-        user.photoURL != null
-            ? ClipOval(
-                child: Material(
-                  color: Colors.transparent,
-                  child: Image.network(
-                    user!.photoURL!,
-                    fit: BoxFit.fitHeight,
-                    height: 50,
-                    width: 50,
-                  ),
-                ),
-              )
-            : const ClipOval(
-                child: Material(
-                  color: Colors.transparent,
-                  child: Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Icon(
-                      Icons.person,
-                      size: 30,
-                      color: Colors.grey,
-                    ),
-                  ),
-                ),
-              ),
-        const SizedBox(height: 16.0),
-        Text(
-          user.displayName!,
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 4.0),
-        Text(
-          user.email!,
-          style: const TextStyle(
-            color: Colors.grey,
-          ),
-        ),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      child: ListView(
-        children: [
-          // DrawerHeader(
-          //   child: Column(
-          //     children: [
-          //       Text(
-          //         widget._user.displayName!,
-          //         style: const TextStyle(
-          //           fontSize: 24,
-          //           fontWeight: FontWeight.bold,
-          //         ),
-          //       ),
-          //       Text(
-          //         widget._user.email!,
-          //         style: const TextStyle(
-          //           fontSize: 16,
-          //           fontWeight: FontWeight.bold,
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // ),
-          ListTile(
-            title: Text(_user == null ? 'Sign In' : "Sign Out"),
-            onTap: () async {
-              if (_user != null) {
-                await Authentication.signOut(context: context);
-                setState(() {
-                  _user = FirebaseAuth.instance.currentUser;
-                });
-              } else {
+    double drawerWidth = MediaQuery.of(context).size.width * 0.5; // Adjust the width as a percentage of the screen width
+
+    return SizedBox(
+      width: drawerWidth,
+      child: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            SizedBox(height: 50), // Space at the top of the drawer
+            ListTile(
+              leading: Icon(_user == null ? Icons.login : Icons.logout),
+              title: Text(_user == null ? 'Sign In' : 'Sign Out'),
+              onTap: () async {
+                if (_user != null) {
+                  await Authentication.signOut(context: context);
+                  setState(() {
+                    _user = FirebaseAuth.instance.currentUser;
+                  });
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const SignIn()),
+                  );
+                }
+              },
+            ),
+            // Additional list tiles for other pages...
+            ListTile(
+              leading: Icon(Icons.settings),
+              title: Text('Settings'),
+              onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const SignIn()),
+                  MaterialPageRoute(builder: (context) => const SettingsPage()),
                 );
-              }
-            },
-          ),
-          signedInWidgets(context, _user)
-        ],
+              },
+            ),
+            // Add more list tiles as needed...
+          ],
+        ),
       ),
     );
   }

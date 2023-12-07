@@ -16,10 +16,11 @@ class _SignInState extends State<SignIn> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.yellow, // Updated color
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
-              icon: const Icon(Icons.arrow_back_outlined),
+              icon: const Icon(Icons.arrow_back_outlined, color: Colors.black), // Icon color changed to black for visibility
               onPressed: () {
                 Navigator.pop(context, true);
               },
@@ -35,14 +36,15 @@ class _SignInState extends State<SignIn> {
           children: [
             Expanded(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Login',
+                    'Welcome Back!',
                     style: TextStyle(
                       fontSize: 36,
                       fontWeight: FontWeight.bold,
-                      // color: Colors.white,
+                      color: Colors.yellow, // Updated color
                     ),
                   ),
                   SizedBox(height: 10),
@@ -50,7 +52,7 @@ class _SignInState extends State<SignIn> {
                     'Please sign in to continue',
                     style: TextStyle(
                       fontSize: 16,
-                      // color: Colors.yellow,
+                      color: Colors.grey, // Kept grey for readability
                     ),
                   ),
                 ],
@@ -76,19 +78,22 @@ class _SignInState extends State<SignIn> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.yellow,
+                        primary: Colors.yellow, // Updated color
+                        onPrimary: Colors.black, // Text color on the button
+                        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                       ),
                       child: Text(
                         'Sign In with Google',
                         style: TextStyle(
-                          color: Colors.black,
+                          fontSize: 18, // Updated font size
+                          color: Colors.black, // Text color for visibility
                         ),
                       ),
                     );
                   }
                   return CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation<Color>(
-                      Colors.orangeAccent,
+                      Colors.yellow, // Updated color
                     ),
                   );
                 },
@@ -101,7 +106,7 @@ class _SignInState extends State<SignIn> {
                 'More Sign-In Options Coming Soon',
                 style: TextStyle(
                   fontSize: 14,
-                  // color: Colors.yellow,
+                  color: Colors.yellow, // Updated color
                 ),
               ),
             ),
