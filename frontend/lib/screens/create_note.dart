@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tesseract_ocr/flutter_tesseract_ocr.dart';
@@ -21,7 +19,7 @@ class NoteForm extends StatefulWidget {
 class _NoteFormState extends State<NoteForm> {
   late TextEditingController _titleController;
   late TextEditingController _textController;
-  QuillController _quillController = QuillController.basic();
+  final QuillController _quillController = QuillController.basic();
   bool isListening = false;
   bool _speechToTextEnabled = false;
   SpeechToText speechToText = SpeechToText();
@@ -44,8 +42,11 @@ class _NoteFormState extends State<NoteForm> {
     final currentText = _textController.text;
     final selectedText = currentSelection.textInside(currentText);
 
-    final formattedText =
-    bold ? '$selectedText' : italic ? '*$selectedText*' : selectedText;
+    final formattedText = bold
+        ? selectedText
+        : italic
+            ? '*$selectedText*'
+            : selectedText;
 
     final newText = currentText.replaceRange(
       currentSelection.start,
@@ -150,33 +151,64 @@ class _NoteFormState extends State<NoteForm> {
 
   Widget buildToolbar() {
     return Container(
-      padding: EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8.0),
       color: Colors.grey[200], // Background color of the toolbar
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            IconButton(
-              icon: Icon(Icons.format_bold),
-              onPressed: () {
-                // Apply bold formatting to the selected text
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.format_italic),
-              onPressed: () {
-                // Apply italic formatting to the selected text
-
-              },
-            ),
-            // Add more buttons for other formatting options as needed
-          ],
+        children: [
+          IconButton(
+            icon: const Icon(Icons.format_bold),
+            onPressed: () {
+              // Apply bold formatting to the selected text
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.format_italic),
+            onPressed: () {
+              // Apply italic formatting to the selected text
+            },
+          ),
+          // Add more buttons for other formatting options as needed
+        ],
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
+    return PopScope(
+        canPop: false,
+        onPopInvoked: (bool didPop) async {
+          if (didPop) {
+            return;
+          }
+          final NavigatorState navigator = Navigator.of(context);
+          bool? willPop = await showDialog(
+              context: context,
+              builder: (_) => AlertDialog(
+                    title: const Text('Leave without saving changes?'),
+                    actions: [
+                      ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(true);
+                          },
+                          child: const Text('Yes')),
+                      TextButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: const Text('No'))
+                    ],
+                  ));
+          if(willPop ?? false){
+            navigator.pop();
+          }
+          // Navigator.pop(context, {
+          //   ...widget.noteData ??
+          //       {}, // Append the prefilled data from the widget
+          //   'title': _titleController.text,
+          //   'text': _textController.text,
+          // });
+          // return true;
+        },
         child: Scaffold(
           appBar: AppBar(
             title: TextField(
@@ -217,10 +249,9 @@ class _NoteFormState extends State<NoteForm> {
                 );
               },
               decoration: const InputDecoration(
-                labelText: 'Title',
-                hintText: 'Write a title here...',
-                border: InputBorder.none
-              ),
+                  labelText: 'Title',
+                  hintText: 'Write a title here...',
+                  border: InputBorder.none),
             ),
             iconTheme: const IconThemeData(
                 color: Colors.yellow), // Set back arrow color
@@ -255,81 +286,80 @@ class _NoteFormState extends State<NoteForm> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   QuillProvider(
-                    configurations: QuillConfigurations(
-                      controller: _quillController,
-                      sharedConfigurations: const QuillSharedConfigurations(
-                        locale: Locale('en'),
+                      configurations: QuillConfigurations(
+                        controller: _quillController,
+                        sharedConfigurations: const QuillSharedConfigurations(
+                          locale: Locale('en'),
+                        ),
                       ),
-                    ),
-                  //buildToolbar(),
-                  //SizedBox(height: 8),
-                    child: Column(
-                      children: [
-                        const SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: [
-                              QuillToolbar(),
-                            ],
+                      //buildToolbar(),
+                      //SizedBox(height: 8),
+                      child: Column(
+                        children: [
+                          const SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: [
+                                QuillToolbar(),
+                              ],
+                            ),
                           ),
-                        ),
-                        QuillEditor(
-                          configurations: const QuillEditorConfigurations(
-                            readOnly: false,
-                            expands: false,
-                            padding: EdgeInsets.all(8),
-                            placeholder: 'Write your note here...',
-                            autoFocus: false,
+                          QuillEditor(
+                            configurations: const QuillEditorConfigurations(
+                              readOnly: false,
+                              expands: false,
+                              padding: EdgeInsets.all(8),
+                              placeholder: 'Write your note here...',
+                              autoFocus: false,
+                            ),
+                            focusNode: FocusNode(),
+                            scrollController: ScrollController(),
                           ),
-                          focusNode: FocusNode(),
-                          scrollController: ScrollController(),
-                        ),
-                        // TextField(
-                        //   controller: _textController,
-                        //   maxLines: 30,
-                        //   minLines: 1,
-                        //   contextMenuBuilder: (context, editableTextState) {
-                        //     return AdaptiveTextSelectionToolbar.buttonItems(
-                        //       anchors: editableTextState.contextMenuAnchors,
-                        //       buttonItems: <ContextMenuButtonItem>[
-                        //         ContextMenuButtonItem(
-                        //           onPressed: () {
-                        //             editableTextState
-                        //                 .copySelection(SelectionChangedCause.toolbar);
-                        //           },
-                        //           type: ContextMenuButtonType.copy,
-                        //         ),
-                        //         ContextMenuButtonItem(
-                        //             onPressed: () {
-                        //               editableTextState
-                        //                   .pasteText(SelectionChangedCause.toolbar);
-                        //             },
-                        //             type: ContextMenuButtonType.paste),
-                        //         ContextMenuButtonItem(
-                        //           onPressed: () {
-                        //             editableTextState
-                        //                 .selectAll(SelectionChangedCause.toolbar);
-                        //           },
-                        //           type: ContextMenuButtonType.selectAll,
-                        //         ),
-                        //         ContextMenuButtonItem(
-                        //           label: 'Text to Speech',
-                        //           onPressed: () {
-                        //             _speak(_textController.text);
-                        //           },
-                        //         ),
-                        //       ],
-                        //     );
-                        //   },
-                        //   decoration: const InputDecoration(
-                        //     hintText: 'Write your note here...',
-                        //       border: InputBorder.none
-                        //   ),
-                        //   keyboardType: TextInputType.multiline,
-                        // ),
-                      ],
-                    )
-                  ),
+                          // TextField(
+                          //   controller: _textController,
+                          //   maxLines: 30,
+                          //   minLines: 1,
+                          //   contextMenuBuilder: (context, editableTextState) {
+                          //     return AdaptiveTextSelectionToolbar.buttonItems(
+                          //       anchors: editableTextState.contextMenuAnchors,
+                          //       buttonItems: <ContextMenuButtonItem>[
+                          //         ContextMenuButtonItem(
+                          //           onPressed: () {
+                          //             editableTextState
+                          //                 .copySelection(SelectionChangedCause.toolbar);
+                          //           },
+                          //           type: ContextMenuButtonType.copy,
+                          //         ),
+                          //         ContextMenuButtonItem(
+                          //             onPressed: () {
+                          //               editableTextState
+                          //                   .pasteText(SelectionChangedCause.toolbar);
+                          //             },
+                          //             type: ContextMenuButtonType.paste),
+                          //         ContextMenuButtonItem(
+                          //           onPressed: () {
+                          //             editableTextState
+                          //                 .selectAll(SelectionChangedCause.toolbar);
+                          //           },
+                          //           type: ContextMenuButtonType.selectAll,
+                          //         ),
+                          //         ContextMenuButtonItem(
+                          //           label: 'Text to Speech',
+                          //           onPressed: () {
+                          //             _speak(_textController.text);
+                          //           },
+                          //         ),
+                          //       ],
+                          //     );
+                          //   },
+                          //   decoration: const InputDecoration(
+                          //     hintText: 'Write your note here...',
+                          //       border: InputBorder.none
+                          //   ),
+                          //   keyboardType: TextInputType.multiline,
+                          // ),
+                        ],
+                      )),
                   const SizedBox(height: 16),
                 ],
               ),
@@ -351,34 +381,6 @@ class _NoteFormState extends State<NoteForm> {
             ),
             child: const Icon(Icons.save),
           ),
-        ),
-        onWillPop: () async {
-          bool willLeave = false;
-          await showDialog(
-              context: context,
-              builder: (_) => AlertDialog(
-                    title: const Text('Leave without saving changes?'),
-                    actions: [
-                      ElevatedButton(
-                          onPressed: () {
-                            willLeave = true;
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text('Yes')),
-                      TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: const Text('No'))
-                    ],
-                  ));
-          return willLeave;
-
-          // Navigator.pop(context, {
-          //   ...widget.noteData ??
-          //       {}, // Append the prefilled data from the widget
-          //   'title': _titleController.text,
-          //   'text': _textController.text,
-          // });
-          // return true;
-        });
+        ));
   }
 }
