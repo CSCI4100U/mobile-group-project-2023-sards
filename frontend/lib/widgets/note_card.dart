@@ -19,20 +19,12 @@ class NoteCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  note.tag != null ? note.tag! : "No tag",
-                  maxLines: 1,
-                  style: const TextStyle(
-                    //color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 4.0),
                   child: Text(
                     note.title,
                     maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       //color: Colors.white,
                       fontSize: 20,
@@ -40,6 +32,18 @@ class NoteCard extends StatelessWidget {
                     ),
                   ),
                 ),
+                Padding(padding: const EdgeInsets.only(bottom: 4.0),child: Text(
+                  note.tag != null ? note.tag! : "No tag",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    //color: Colors.white,
+                    backgroundColor: Colors.yellow,
+                    color: Colors.black,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                )),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 4.0),
                   child: Text(
@@ -55,7 +59,7 @@ class NoteCard extends StatelessWidget {
                 ),
                 Text(
                   deltaJsonToString(note.text),
-                  maxLines: 8,
+                  maxLines: 4,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontSize: 12,
