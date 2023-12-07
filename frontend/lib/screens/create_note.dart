@@ -179,16 +179,20 @@ class _NoteFormState extends State<NoteForm> {
           bool? willPop = await showDialog(
               context: context,
               builder: (_) => AlertDialog(
-                    title: const Text('Leave without saving changes?'),
+                    title: const Text('Leave without saving changes?', style: TextStyle(color: Colors.black)),
+                backgroundColor: const Color(0xFFB4A327),
                     actions: [
                       ElevatedButton(
                           onPressed: () {
                             Navigator.of(context).pop(true);
                           },
-                          child: const Text('Yes')),
+                          child: const Text('Yes', style: TextStyle(color: Colors.black)),
+                          style: ElevatedButton.styleFrom(
+                            primary: const Color(0xFFE7CB2F),
+                          ),),
                       TextButton(
                           onPressed: () => Navigator.of(context).pop(false),
-                          child: const Text('No'))
+                          child: const Text('No', style: TextStyle(color: Colors.black)))
                     ],
                   ));
           if (willPop ?? false) {
@@ -256,19 +260,18 @@ class _NoteFormState extends State<NoteForm> {
                       ),
                       child: Column(
                         children: [
-                          Container(
-                            decoration: const BoxDecoration(border: Border.symmetric(vertical: BorderSide(color: Colors.yellow,width: 2.0))),
-                            child: const SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                children: [
-                                  QuillToolbar(
-                                    configurations: QuillToolbarConfigurations(
-
-                                    ),
+                          QuillToolbar(
+                            configurations: QuillToolbarConfigurations(
+                              multiRowsDisplay: false,
+                              buttonOptions: QuillToolbarButtonOptions(
+                                base: QuillToolbarBaseButtonOptions(
+                                  iconTheme: QuillIconTheme(
+                                    iconSelectedColor: Colors.yellow,
+                                    iconUnselectedColor: Color(0xFFCCBB2E),
+                                    disabledIconColor: Color(0xFFE7D434),
                                   ),
-                                ],
-                              ),
+                                )
+                              )
                             ),
                           ),
                           QuillEditor(
@@ -301,7 +304,12 @@ class _NoteFormState extends State<NoteForm> {
                 onPressed: () async {
                   if(_quillController.document.toPlainText().trim().isEmpty){
                     return await showDialog(context: context, builder: (context){
-                      return AlertDialog(title: const Text("Cannot save an empty note"),actions: [TextButton(child: const Text("Close"), onPressed: ()=>Navigator.of(context).pop(),)],);
+                      return AlertDialog(title: const Text("Cannot save an empty note",
+                          style: TextStyle(color: Colors.black)),
+                        actions: [TextButton(child: const Text("Close",
+                            style: TextStyle(color: Colors.black)),
+                          onPressed: ()=>Navigator.of(context).pop(),)],
+                        backgroundColor: const Color(0xFFB4A327),);
                     });
                   }
                   String title = _titleController.text.trim();

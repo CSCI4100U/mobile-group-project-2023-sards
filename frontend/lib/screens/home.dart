@@ -132,8 +132,8 @@ class _HomePageState extends State<HomePage> {
     if (noteMap != null) {
       await notesProvider.updateNote(noteMap, index).then((val) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("Note successfully updated",
-                style: TextStyle(color: Colors.black))));
+            content: Text("Note successfully updated")
+        ));
       });
     }
   }
