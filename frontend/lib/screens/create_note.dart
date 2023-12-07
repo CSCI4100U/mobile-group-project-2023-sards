@@ -9,6 +9,7 @@ import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:flutter_quill/flutter_quill.dart';
+import 'package:kanjou/utilities/first_few_words.dart';
 
 class NoteForm extends StatefulWidget {
   const NoteForm({Key? key, this.noteData}) : super(key: key);
@@ -299,7 +300,7 @@ class _NoteFormState extends State<NoteForm> {
                   String title = _titleController.text.trim();
                   Navigator.pop(context, {
                     ...widget.noteData ?? {},
-                    'title': title.isNotEmpty ? title : "Untitled",
+                    'title': title.isNotEmpty ? title : firstFewWords(_quillController.document.toPlainText()),
                     'text':
                         jsonEncode(_quillController.document.toDelta().toJson()),
                   });
