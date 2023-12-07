@@ -1,7 +1,6 @@
 import json
 import cohere
-from inputs import input
-from cohere.classify import Example
+from cohere.responses.classify import Example
 from openAICategorizer import categorize_with_cohere
 
 co = cohere.Client('habRbsqqOQyn8RpT7lMEFfOxaGjFts6mx9gKVvLQ')
@@ -12,7 +11,7 @@ def train_and_execute_model(input):
     examples = []
     data = None
 
-    with open("./backend/app/data.json", "r") as json_file:
+    with open("./backend/app/utils/data.json", "r") as json_file:
         data = json.load(json_file)
 
     for tag in data:
@@ -26,8 +25,12 @@ def train_and_execute_model(input):
         examples = examples
     )
 
-    if response.classifications[0].confidence <= 0.75:
+    if response.classifications[0].confidence <= 0.50:
         return categorize_with_cohere(input)
-    return response.classifications[0].prediction, response.classifications[0].confidence
+    else:
+        return response.classifications[0].prediction, response.classifications[0].confidence
 
+input = """
+Create and submit patches to the Linux Kernel (Staging tree) for drivers. The process involves going through documentation, debugging, reading previous patches, and running tests to make sure that the patch adheres to the kernel's standards, and that the driver compiles. Every patch is reviewed by the maintainers of the driver.
+"""
 print(train_and_execute_model(input))
