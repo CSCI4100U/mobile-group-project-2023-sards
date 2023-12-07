@@ -179,7 +179,7 @@ class _NoteFormState extends State<NoteForm> {
           bool? willPop = await showDialog(
               context: context,
               builder: (_) => AlertDialog(
-                    title: const Text('Leave without saving changes?'),
+                    title: const Text('Leave without saving changes?', style: TextStyle(color: Colors.black)),
                 backgroundColor: const Color(0xFFB4A327),
                     actions: [
                       ElevatedButton(
@@ -268,7 +268,15 @@ class _NoteFormState extends State<NoteForm> {
                                 children: [
                                   QuillToolbar(
                                     configurations: QuillToolbarConfigurations(
-
+                                      buttonOptions: QuillToolbarButtonOptions(
+                                        base: QuillToolbarBaseButtonOptions(
+                                          iconTheme: QuillIconTheme(
+                                            iconSelectedColor: Colors.yellow,
+                                            iconUnselectedColor: Color(0xFFCCBB2E),
+                                            disabledIconColor: Color(0xFFE7D434),
+                                          ),
+                                        )
+                                      )
                                     ),
                                   ),
                                 ],
