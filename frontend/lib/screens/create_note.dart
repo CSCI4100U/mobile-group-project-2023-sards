@@ -32,10 +32,10 @@ class _NoteFormState extends State<NoteForm> {
     super.initState();
     _titleController =
         TextEditingController(text: widget.noteData?['title'] ?? "");
-    try{
+    try {
       _quillController.document =
           Document.fromJson(jsonDecode(widget.noteData?['text']));
-    } catch(e){
+    } catch (e) {
       _quillController.document = Document();
     }
     _initTts();
@@ -49,14 +49,14 @@ class _NoteFormState extends State<NoteForm> {
     super.dispose();
   }
 
-  Future pickImageFromGallery() async {
+  Future<String?> pickImageFromGallery() async {
     try {
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-      if (image == null) return;
-      return image.path;
+      return image?.path;
     } on PlatformException catch (e) {
       debugPrint('Failed to pick image: $e');
     }
+    return null;
   }
 
   void onSpeechResult(SpeechRecognitionResult result) {
@@ -135,6 +135,37 @@ class _NoteFormState extends State<NoteForm> {
     }
   }
 
+  Widget contextMenuBuilder(editableTextState, ttsFunc) {
+    return AdaptiveTextSelectionToolbar.buttonItems(
+      anchors: editableTextState.contextMenuAnchors,
+      buttonItems: <ContextMenuButtonItem>[
+        ContextMenuButtonItem(
+          onPressed: () {
+            editableTextState.copySelection(SelectionChangedCause.toolbar);
+          },
+          type: ContextMenuButtonType.copy,
+        ),
+        ContextMenuButtonItem(
+            onPressed: () {
+              editableTextState.pasteText(SelectionChangedCause.toolbar);
+            },
+            type: ContextMenuButtonType.paste),
+        ContextMenuButtonItem(
+          onPressed: () {
+            editableTextState.selectAll(SelectionChangedCause.toolbar);
+          },
+          type: ContextMenuButtonType.selectAll,
+        ),
+        ContextMenuButtonItem(
+          label: 'Text to Speech',
+          onPressed: () {
+            ttsFunc();
+          },
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -169,39 +200,8 @@ class _NoteFormState extends State<NoteForm> {
               controller: _titleController,
               maxLines: 1,
               minLines: 1,
-              contextMenuBuilder: (context, editableTextState) {
-                return AdaptiveTextSelectionToolbar.buttonItems(
-                  anchors: editableTextState.contextMenuAnchors,
-                  buttonItems: <ContextMenuButtonItem>[
-                    ContextMenuButtonItem(
-                      onPressed: () {
-                        editableTextState
-                            .copySelection(SelectionChangedCause.toolbar);
-                      },
-                      type: ContextMenuButtonType.copy,
-                    ),
-                    ContextMenuButtonItem(
-                        onPressed: () {
-                          editableTextState
-                              .pasteText(SelectionChangedCause.toolbar);
-                        },
-                        type: ContextMenuButtonType.paste),
-                    ContextMenuButtonItem(
-                      onPressed: () {
-                        editableTextState
-                            .selectAll(SelectionChangedCause.toolbar);
-                      },
-                      type: ContextMenuButtonType.selectAll,
-                    ),
-                    ContextMenuButtonItem(
-                      label: 'Text to Speech',
-                      onPressed: () {
-                        _speak(_quillController.document.toPlainText());
-                      },
-                    ),
-                  ],
-                );
-              },
+              contextMenuBuilder: (context, state) => contextMenuBuilder(
+                  state, () => _speak(_titleController.text)),
               decoration: const InputDecoration(
                   labelText: 'Title',
                   hintText: 'Write a title here...',
@@ -212,11 +212,16 @@ class _NoteFormState extends State<NoteForm> {
               IconButton(
                 tooltip: "Extract text from image",
                 onPressed: () async {
-                  var imagePath = await pickImageFromGallery();
+                  String? imagePath = await pickImageFromGallery();
+                  if (imagePath == null) {
+                    return;
+                  }
                   String text =
                       await FlutterTesseractOcr.extractText(imagePath);
-                  _quillController.document
-                      .insert(_quillController.document.length - 1, text);
+                  setState(() {
+                    _quillController.document
+                        .insert(_quillController.document.length - 1, text);
+                  });
                 },
                 icon: const Icon(
                   Icons.document_scanner_outlined,
@@ -259,13 +264,17 @@ class _NoteFormState extends State<NoteForm> {
                             ),
                           ),
                           QuillEditor(
-                            configurations: const QuillEditorConfigurations(
-                              readOnly: false,
-                              expands: false,
-                              padding: EdgeInsets.all(8),
-                              placeholder: 'Write your note here...',
-                              autoFocus: false,
-                            ),
+                            configurations: QuillEditorConfigurations(
+                                readOnly: false,
+                                expands: false,
+                                padding: const EdgeInsets.all(8),
+                                placeholder: 'Write your note here...',
+                                autoFocus: false,
+                                contextMenuBuilder: (context, state) =>
+                                    contextMenuBuilder(
+                                        state,
+                                        () => _speak(_quillController.document
+                                            .toPlainText()))),
                             focusNode: FocusNode(),
                             scrollController: ScrollController(),
                           ),
@@ -276,22 +285,27 @@ class _NoteFormState extends State<NoteForm> {
               ),
             ),
           ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-          floatingActionButton: FloatingActionButton(
-            onPressed: () async {
-              Navigator.pop(context, {
-                ...widget.noteData ?? {},
-                'title': _titleController.text,
-                'text':
-                    jsonEncode(_quillController.document.toDelta().toJson()),
-              });
-            },
-            backgroundColor: const Color(0xFFE7D434), // Set button color
-            shape: RoundedRectangleBorder(
-              borderRadius:
-                  BorderRadius.circular(10), // Set button border radius
+          floatingActionButton: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Transform.scale(
+              scale: 1.2,
+              child: FloatingActionButton(
+                onPressed: () async {
+                  Navigator.pop(context, {
+                    ...widget.noteData ?? {},
+                    'title': _titleController.text,
+                    'text':
+                        jsonEncode(_quillController.document.toDelta().toJson()),
+                  });
+                },
+                backgroundColor: const Color(0xFFE7D434), // Set button color
+                shape: RoundedRectangleBorder(
+                  borderRadius:
+                      BorderRadius.circular(10), // Set button border radius
+                ),
+                child: const Icon(Icons.save,size: 32),
+              ),
             ),
-            child: const Icon(Icons.save),
           ),
         ));
   }
