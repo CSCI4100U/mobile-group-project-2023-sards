@@ -285,22 +285,27 @@ class _NoteFormState extends State<NoteForm> {
               ),
             ),
           ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-          floatingActionButton: FloatingActionButton(
-            onPressed: () async {
-              Navigator.pop(context, {
-                ...widget.noteData ?? {},
-                'title': _titleController.text,
-                'text':
-                    jsonEncode(_quillController.document.toDelta().toJson()),
-              });
-            },
-            backgroundColor: const Color(0xFFE7D434), // Set button color
-            shape: RoundedRectangleBorder(
-              borderRadius:
-                  BorderRadius.circular(10), // Set button border radius
+          floatingActionButton: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Transform.scale(
+              scale: 1.2,
+              child: FloatingActionButton(
+                onPressed: () async {
+                  Navigator.pop(context, {
+                    ...widget.noteData ?? {},
+                    'title': _titleController.text,
+                    'text':
+                        jsonEncode(_quillController.document.toDelta().toJson()),
+                  });
+                },
+                backgroundColor: const Color(0xFFE7D434), // Set button color
+                shape: RoundedRectangleBorder(
+                  borderRadius:
+                      BorderRadius.circular(10), // Set button border radius
+                ),
+                child: const Icon(Icons.save,size: 32),
+              ),
             ),
-            child: const Icon(Icons.save),
           ),
         ));
   }

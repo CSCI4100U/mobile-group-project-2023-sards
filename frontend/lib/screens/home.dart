@@ -223,7 +223,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         floatingActionButton: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(12.0),
           child: Transform.scale(
             scale: 1.2, // Increase the size
             child: FloatingActionButton(
