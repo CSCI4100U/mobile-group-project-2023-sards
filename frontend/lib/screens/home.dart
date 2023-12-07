@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:kanjou/utilities/quill_document_conversion.dart';
@@ -148,46 +149,50 @@ class _HomePageState extends State<HomePage> {
     await notesProvider.refresh();
   }
 
+  void addNote(BuildContext context) {
+    SettingsProvider settingsProvider =
+        Provider.of<SettingsProvider>(context, listen: false);
+    NotesProvider notesProvider =
+        Provider.of<NotesProvider>(context, listen: false);
+    Navigator.push(
+            context, MaterialPageRoute(builder: (context) => const NoteForm()))
+        .then((returnedMap) {
+      // Check if the returned map has the title value or text value empty
+      if (returnedMap != null &&
+          returnedMap.isNotEmpty &&
+          returnedMap['text'] != "") {
+        if (returnedMap['title'] == null || returnedMap['title'] == "") {
+          returnedMap['title'] = 'Untitled';
+        }
+        notesProvider.insertNote(returnedMap);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('Note successfully saved',
+                  style: TextStyle(color: Colors.black)),
+              backgroundColor: Color(0xFFE7D434)),
+        );
+        if (settingsProvider.sync) {
+          Sync.uploadToCloud(context);
+        }
+      } else {
+        // Show a little notification on the bottom saying that the note was not added
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('The note was not saved',
+                style: TextStyle(color: Colors.black)),
+            backgroundColor: Color(0xFFE7D434),
+          ),
+        );
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // CollectionReference notesCollection =
     // FirebaseFirestore.instance.collection('notes');
     final notesProvider = Provider.of<NotesProvider>(context);
     final providerSettings = Provider.of<SettingsProvider>(context);
-    // These methods have to be inside the build method because they use context
-    void addNote() {
-      Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const NoteForm()))
-          .then((returnedMap) {
-        // Check if the returned map has the title value or text value empty
-        if (returnedMap != null &&
-            returnedMap.isNotEmpty &&
-            returnedMap['text'] != "") {
-          if (returnedMap['title'] == null || returnedMap['title'] == "") {
-            returnedMap['title'] = 'Untitled';
-          }
-          notesProvider.insertNote(returnedMap);
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-                content: Text('Note successfully saved',
-                    style: TextStyle(color: Colors.black)),
-                backgroundColor: Color(0xFFE7D434)),
-          );
-          if (providerSettings.sync) {
-            Sync.uploadToCloud(context);
-          }
-        } else {
-          // Show a little notification on the bottom saying that the note was not added
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('The note was not saved',
-                  style: TextStyle(color: Colors.black)),
-              backgroundColor: Color(0xFFE7D434),
-            ),
-          );
-        }
-      });
-    }
 
     return PopScope(
       canPop: !_isSelectMode,
@@ -229,7 +234,7 @@ class _HomePageState extends State<HomePage> {
             child: FloatingActionButton(
               tooltip: 'Add a Note',
               onPressed: !_isSelectMode
-                  ? addNote
+                  ? () => addNote(context)
                   : () async {
                       await showDialog(
                           context: context,
