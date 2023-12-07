@@ -291,9 +291,15 @@ class _NoteFormState extends State<NoteForm> {
               scale: 1.2,
               child: FloatingActionButton(
                 onPressed: () async {
+                  if(_quillController.document.toPlainText().trim().isEmpty){
+                    return await showDialog(context: context, builder: (context){
+                      return AlertDialog(title: const Text("Cannot save an empty note"),actions: [TextButton(child: const Text("Close"), onPressed: ()=>Navigator.of(context).pop(),)],);
+                    });
+                  }
+                  String title = _titleController.text.trim();
                   Navigator.pop(context, {
                     ...widget.noteData ?? {},
-                    'title': _titleController.text,
+                    'title': title.isNotEmpty ? title : "Untitled",
                     'text':
                         jsonEncode(_quillController.document.toDelta().toJson()),
                   });

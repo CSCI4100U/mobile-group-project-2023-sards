@@ -56,21 +56,9 @@ class _HomePageState extends State<HomePage> {
         return ListTile(
             title: Text(results[index].title),
             subtitle: Text(noteText),
-            onTap: () async {
+            onTap: () {
               controller.closeView("");
-              Map<String, dynamic>? noteMap = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => NoteForm(
-                            noteData: results[index].toMap(),
-                          )));
-              if (noteMap != null) {
-                await notesProvider.updateNote(noteMap, index).then((val) {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text("Note successfully updated",
-                          style: TextStyle(color: Colors.black))));
-                });
-              }
+              updateNote(context, results[index].toMap(), index);
             });
       });
     });
@@ -112,25 +100,7 @@ class _HomePageState extends State<HomePage> {
                       }
                     });
                   }
-                : () async {
-                    Map<String, dynamic>? noteMap = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => NoteForm(
-                                  // speechToText: _speechToText,
-                                  noteData: note.toMap(),
-                                )));
-                    if (noteMap != null) {
-                      await notesProvider
-                          .updateNote(noteMap, index)
-                          .then((val) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text("Note successfully updated",
-                                    style: TextStyle(color: Colors.black))));
-                      });
-                    }
-                  },
+                : () => updateNote(context, note.toMap(), index),
             onLongPress: () {
               toggleSelectMode(index: index);
             },
@@ -149,6 +119,25 @@ class _HomePageState extends State<HomePage> {
     await notesProvider.refresh();
   }
 
+  void updateNote(
+      BuildContext context, Map<String, dynamic> noteData, int index) async {
+    NotesProvider notesProvider =
+        Provider.of<NotesProvider>(context, listen: false);
+    Map<String, dynamic>? noteMap = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => NoteForm(
+                  noteData: noteData,
+                )));
+    if (noteMap != null) {
+      await notesProvider.updateNote(noteMap, index).then((val) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Note successfully updated",
+                style: TextStyle(color: Colors.black))));
+      });
+    }
+  }
+
   void addNote(BuildContext context) {
     SettingsProvider settingsProvider =
         Provider.of<SettingsProvider>(context, listen: false);
@@ -157,13 +146,7 @@ class _HomePageState extends State<HomePage> {
     Navigator.push(
             context, MaterialPageRoute(builder: (context) => const NoteForm()))
         .then((returnedMap) {
-      // Check if the returned map has the title value or text value empty
-      if (returnedMap != null &&
-          returnedMap.isNotEmpty &&
-          returnedMap['text'] != "") {
-        if (returnedMap['title'] == null || returnedMap['title'] == "") {
-          returnedMap['title'] = 'Untitled';
-        }
+      if (returnedMap != null && returnedMap.isNotEmpty) {
         notesProvider.insertNote(returnedMap);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
