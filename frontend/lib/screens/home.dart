@@ -263,7 +263,7 @@ class _HomePageState extends State<HomePage> {
                     },
               backgroundColor: const Color(0xFFE7D434),
               child: Icon(_isSelectMode ? Icons.delete : Icons.edit_note_sharp,
-                  color: const Color.fromARGB(255, 0, 0, 0)),
+                  color: const Color.fromARGB(255, 0, 0, 0), size: 32),
             ),
           ),
         ),
