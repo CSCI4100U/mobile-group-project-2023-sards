@@ -180,15 +180,19 @@ class _NoteFormState extends State<NoteForm> {
               context: context,
               builder: (_) => AlertDialog(
                     title: const Text('Leave without saving changes?'),
+                backgroundColor: const Color(0xFFB4A327),
                     actions: [
                       ElevatedButton(
                           onPressed: () {
                             Navigator.of(context).pop(true);
                           },
-                          child: const Text('Yes')),
+                          child: const Text('Yes', style: TextStyle(color: Colors.black)),
+                          style: ElevatedButton.styleFrom(
+                            primary: const Color(0xFFE7CB2F),
+                          ),),
                       TextButton(
                           onPressed: () => Navigator.of(context).pop(false),
-                          child: const Text('No'))
+                          child: const Text('No', style: TextStyle(color: Colors.black)))
                     ],
                   ));
           if (willPop ?? false) {
@@ -294,7 +298,12 @@ class _NoteFormState extends State<NoteForm> {
                 onPressed: () async {
                   if(_quillController.document.toPlainText().trim().isEmpty){
                     return await showDialog(context: context, builder: (context){
-                      return AlertDialog(title: const Text("Cannot save an empty note"),actions: [TextButton(child: const Text("Close"), onPressed: ()=>Navigator.of(context).pop(),)],);
+                      return AlertDialog(title: const Text("Cannot save an empty note",
+                          style: TextStyle(color: Colors.black)),
+                        actions: [TextButton(child: const Text("Close",
+                            style: TextStyle(color: Colors.black)),
+                          onPressed: ()=>Navigator.of(context).pop(),)],
+                        backgroundColor: const Color(0xFFB4A327),);
                     });
                   }
                   String title = _titleController.text.trim();
