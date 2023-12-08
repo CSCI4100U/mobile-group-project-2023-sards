@@ -190,9 +190,14 @@ class _NoteFormState extends State<NoteForm> {
                           style: ElevatedButton.styleFrom(
                             primary: const Color(0xFFE7CB2F),
                           ),),
-                      TextButton(
-                          onPressed: () => Navigator.of(context).pop(false),
-                          child: const Text('No', style: TextStyle(color: Colors.black)))
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(true);
+                        },
+                        child: const Text('No', style: TextStyle(color: Colors.black)),
+                        style: ElevatedButton.styleFrom(
+                          primary: const Color(0xFFB4A327),
+                        ),),
                     ],
                   ));
           if (willPop ?? false) {
