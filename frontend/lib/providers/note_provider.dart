@@ -9,6 +9,7 @@ import 'package:kanjou/models/note.dart';
 import 'package:kanjou/services/connectivity.dart';
 import 'package:kanjou/services/database_helper.dart';
 import 'package:kanjou/services/firestore_helper.dart';
+import 'package:kanjou/utilities/quill_document_conversion.dart';
 import 'package:uuid/uuid.dart';
 
 var url =
@@ -34,7 +35,7 @@ class NotesProvider extends ChangeNotifier {
   }
 
   Future<void> classifyNote(Note note, int i) async {
-    String body = "${note.title}:${note.text}";
+    String body = "${note.title}:${deltaJsonToString(note.text)}";
     Map<String, dynamic> jsonData = {'note': body};
 
     var jsonBody = json.encode(jsonData);
