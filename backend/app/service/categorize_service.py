@@ -2,9 +2,11 @@ import json
 import cohere, openai
 from utils.inputs import input
 from cohere.responses.classify import Example
+from dotenv import load_dotenv
+import os
 
-co = cohere.Client("habRbsqqOQyn8RpT7lMEFfOxaGjFts6mx9gKVvLQ")
-openai.api_key = "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"
+co = cohere.Client(os.getenv('COHERE_KEY'))
+openai.api_key = os.getenv('OPENAI_KEY')
 
 def train_and_execute_model(input):
     inputs = [input]

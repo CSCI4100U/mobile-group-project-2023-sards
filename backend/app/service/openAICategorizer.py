@@ -1,7 +1,9 @@
 import openai
 import json
+import os
+from dotenv import load_dotenv
 
-openai.api_key = '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'
+openai.api_key = os.getenv('OPENAI_KEY')
 
 
 def categorize_random_note(note: str):

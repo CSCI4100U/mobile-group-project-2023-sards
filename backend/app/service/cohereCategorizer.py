@@ -2,8 +2,10 @@ import json
 import cohere
 from cohere.responses.classify import Example
 from openAICategorizer import categorize_with_cohere
+import os
+from dotenv import load_dotenv
 
-co = cohere.Client('habRbsqqOQyn8RpT7lMEFfOxaGjFts6mx9gKVvLQ')
+co = cohere.Client(os.getenv('COHERE_KEY'))
 
 
 def train_and_execute_model(input):
